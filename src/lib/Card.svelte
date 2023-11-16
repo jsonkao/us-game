@@ -1,5 +1,5 @@
 <script>
-	import { chipColors } from '$lib/colors.js';
+	import { chipColors, chipTextColors } from '$lib/colors.js';
 	import { cardStore, playerStore } from '$lib/stores.js';
 
 	export let card = {};
@@ -16,23 +16,23 @@
 	style="--card-color: {chipColors[discount]}"
 	on:click={() => cardStore.purchase($playerStore, index)}
 >
-	<p class="score">
+	<p class="score" style="color: {chipTextColors[discount] || '#121212'}">
 		{#if score > 0}
 			{score}
 		{/if}
 	</p>
 
-	{#if !isPurchased}
-		<div class="costs">
+	<div class="costs">
+		{#if !isPurchased}
 			{#each costs as cost, i}
 				{#if cost > 0}
-					<p class="cost" style="--color: {chipColors[i]}">
+					<p class="cost" style="--bg-color: {chipColors[i]}; --text-color: {chipTextColors[i]}">
 						{cost}
 					</p>
 				{/if}
 			{/each}
-		</div>
-	{/if}
+		{/if}
+	</div>
 </button>
 
 <style>
@@ -46,7 +46,7 @@
 		box-shadow: var(--drop-shadow);
 
 		display: grid;
-		grid-template-columns: repeat(2, 1fr);
+		grid-template-columns: repeat(2, 50%);
 	}
 
 	.card.isNoble {
@@ -56,6 +56,10 @@
 	.card.isPurchased {
 		width: calc(var(--card-width) / 2);
 		height: calc(var(--card-height) / 2);
+	}
+
+	.card.isPurchased .score {
+		font-size: 20px;
 	}
 
 	.card:hover {
@@ -88,6 +92,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: var(--color);
+		background: var(--bg-color);
+		color: var(--text-color);
 	}
 </style>

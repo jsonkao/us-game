@@ -12,23 +12,22 @@
 </script>
 
 <div class="container">
+	<div class="switch-button">
+		<button on:click={playerStore.switchTurn}>Player {$playerStore + 1}'s turn. Switch.</button>
+	</div>
 	<Bank />
 
 	<PlayerHand player={0} />
 	<CardGrid />
 	<PlayerHand player={1} />
-	<div class="switch-button">
-		<button on:click={playerStore.switchTurn}>Switch turns</button>
-	</div>
 
 	<div class="nobles">
-		<p>Nobles</p>
-
 		<div>
 			{#each nobles as card}
 				<Card {card} isNoble />
 			{/each}
 		</div>
+		<p>Nobles</p>
 	</div>
 </div>
 
@@ -53,7 +52,6 @@
 	}
 
 	button {
-		max-width: 120px;
 		margin: 0 auto;
 		display: block;
 	}
@@ -61,7 +59,7 @@
 	.container {
 		--card-width: 110px;
 		--card-height: 160px;
-		--drop-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+		--drop-shadow: 0 -3px 2px rgba(0, 0, 0, 0.2);
 
 		padding: 50px 30px;
 		display: grid;
@@ -74,7 +72,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 6px;
+		gap: 8px;
 		grid-column: 1 / -1;
 	}
 

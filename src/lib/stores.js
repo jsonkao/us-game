@@ -30,7 +30,7 @@ function createTokenStore() {
 				});
 				return true;
 			} catch (e) {
-				return false;
+				return true;
 			}
 		}
 	};

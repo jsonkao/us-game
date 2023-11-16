@@ -29,7 +29,7 @@
 
 <style>
 	.card-grid {
-		--column-gap: 5px;
+		--column-gap: 10px;
 
 		width: calc(5 * var(--card-width) + 4 * var(--column-gap));
 		display: grid;
