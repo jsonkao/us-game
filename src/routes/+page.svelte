@@ -1,29 +1,25 @@
 <script>
 	import CardGrid from '$lib/CardGrid.svelte';
 	import Card from '$lib/Card.svelte';
-	import Tokens from '$lib/Tokens.svelte';
-	import { onMount } from 'svelte';
+	import PlayerHand from '$lib/PlayerHand.svelte';
+	import Bank from '$lib/Bank.svelte';
+
+	import { playerStore } from '$lib/stores';
 
 	export let data;
 
-	let { cards, nobles } = data;
-
-	onMount(() => {
-		// This allows the cards to be randomized in a consistent way
-		let seedValue = localStorage.getItem('seedValue');
-		if (!seedValue) localStorage.setItem('seedValue', (seedValue = 0));
-		cards = cards.sort((a, b) => {
-			return Math.sin(seedValue + a.id) - Math.sin(seedValue + b.id);
-		});
-	});
-
-	let tokens = [4, 4, 4, 4, 4];
+	let { nobles } = data;
 </script>
 
 <div class="container">
-	<div />
-	<CardGrid {cards} />
-	<Tokens {tokens} />
+	<Bank />
+
+	<PlayerHand player={0} />
+	<CardGrid />
+	<PlayerHand player={1} />
+	<div class="switch-button">
+		<button on:click={playerStore.switchTurn}>Switch turns</button>
+	</div>
 
 	<div class="nobles">
 		<p>Nobles</p>
@@ -38,21 +34,39 @@
 
 <style>
 	:global(body) {
+		--bg-color: #f5eee6;
 		font-family: 'Roboto', sans-serif;
 		margin: 0;
-		background-color: #f5eee6;
+		background-color: var(--bg-color);
 	}
 
 	:global(p) {
 		margin: 0;
 	}
 
+	:global(button:hover) {
+		cursor: pointer;
+	}
+
+	.switch-button {
+		grid-column: 1 / -1;
+	}
+
+	button {
+		max-width: 120px;
+		margin: 0 auto;
+		display: block;
+	}
+
 	.container {
 		--card-width: 110px;
-		padding: 50px 0;
+		--card-height: 160px;
+		--drop-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+		padding: 50px 30px;
 		display: grid;
 		grid-template-columns: 1fr min-content 1fr;
-		row-gap: 50px;
+		row-gap: 30px;
 		column-gap: 10px;
 	}
 
