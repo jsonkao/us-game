@@ -21,7 +21,7 @@
 					out:send={{ key: index }}
 					style="--color: {chipColors[color]};"
 					animate:flip
-					on:click={() => tokenStore.take($playerStore, index)}
+					on:click={() => tokenStore.take(owner === 'bank' ? $playerStore : 'bank', index)}
 				/>
 			{/each}
 		</div>
@@ -30,11 +30,10 @@
 
 <style>
 	.container {
-		--size: 50px;
 		--row-height: 5px;
 		grid-column: 1 / -1;
 		display: flex;
-		height: calc(var(--size) + var(--row-height) * 3);
+		height: calc(var(--token-size) + var(--row-height) * 3);
 	}
 
 	.tokens {
@@ -46,8 +45,8 @@
 
 	button {
 		all: unset;
-		width: var(--size);
-		height: var(--size);
+		width: var(--token-size);
+		height: var(--token-size);
 		background: var(--bg-color);
 		border-radius: 50%;
 		box-shadow:

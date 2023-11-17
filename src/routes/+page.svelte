@@ -3,20 +3,21 @@
 	import Card from '$lib/Card.svelte';
 	import PlayerHand from '$lib/PlayerHand.svelte';
 	import Tokens from '$lib/Tokens.svelte';
+	import { onMount } from 'svelte';
 
-	import { playerStore } from '$lib/stores';
+	import { playerStore, nobleStore } from '$lib/stores';
 
-	export let data;
-
-	let { nobles } = data;
-	const nobleImages = import.meta.glob('$lib/images/nobles/*');
+	// When the Enter key is pressed, switch player turn
+	onMount(() => {
+		window.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter') playerStore.switchTurn();
+		});
+	});
 </script>
 
 <div class="container">
-	<div class="switch-button">
-		<button on:click={playerStore.switchTurn}>Player {$playerStore + 1}'s turn. Switch.</button>
-	</div>
 	<Tokens owner="bank" />
+	<p class="switch-turn">Player {$playerStore + 1}&#8217;s turn. Press Enter to switch turns.</p>
 
 	<PlayerHand player={0} />
 	<CardGrid />
@@ -24,14 +25,13 @@
 
 	<div class="nobles">
 		<div>
-			{#each nobles as card}
-				<Card
-					{card}
-					isNoble
-					imagePromise={nobleImages[
-						Object.keys(nobleImages)[+card.index % Object.keys(nobleImages).length]
-					]()}
-				/>
+			{#each $nobleStore as card}
+				{#if card.owner === 'bank'}
+					<Card
+						{card}
+						isNoble
+					/>
+				{/if}
 			{/each}
 		</div>
 	</div>
@@ -53,24 +53,23 @@
 		cursor: pointer;
 	}
 
-	.switch-button {
+	.switch-turn {
+		text-align: center;
 		grid-column: 1 / -1;
-	}
-
-	button {
-		margin: 0 auto;
-		display: block;
+		margin: 15px 0;
 	}
 
 	.container {
 		--card-width: 110px;
 		--card-height: 160px;
+		--token-size: 50px;
 		--drop-shadow: 0 -3px 2px rgba(0, 0, 0, 0.2);
+		--cost-size: 12px;
+		--cost-padding: 8px;
 
 		padding: 50px 30px;
 		display: grid;
 		grid-template-columns: 1fr min-content 1fr;
-		row-gap: 30px;
 		column-gap: 10px;
 	}
 
@@ -80,10 +79,21 @@
 		align-items: center;
 		gap: 8px;
 		grid-column: 1 / -1;
+		margin-top: 35px;
 	}
 
 	.nobles div {
 		display: flex;
 		column-gap: 4px;
+	}
+
+	@media (max-width: 960px) {
+		.container {
+			--card-width: 80px;
+			--card-height: 120px;
+			--token-size: 30px;
+			--cost-size: 10px;
+			--cost-padding: px;
+		}
 	}
 </style>

@@ -1,5 +1,40 @@
 import { writable, get } from 'svelte/store';
-import { cards } from '$lib/constants.json';
+import { cards, nobles } from '$lib/constants.json';
+
+const nobleImages = import.meta.glob('$lib/images/nobles/*');
+
+async function createNobleStore() {
+	const initialNobles = await Promise.all(
+		nobles
+			.sort(() => Math.random() - 0.5)
+			.slice(0, 3)
+			.map(async (n) => ({
+				...n,
+				owner: 'bank',
+				image: (await nobleImages[Object.keys(nobleImages)[+n.index % Object.keys(nobleImages).length]]()).default
+			}))
+	);
+	const { subscribe, update } = writable(initialNobles);
+
+	return {
+		subscribe,
+		checkForNobles: (player, cards) => {
+			update((nobles) => {
+				// If player is eligible for a noble, assign that player to be the owner for those nobles
+				const playerCards = cards.filter((c) => c.owner === player);
+				const eligibleNobles = nobles.filter(({ costs }) =>
+					costs.every(
+						(value, color) => playerCards.filter((c) => c.discount === color).length >= value
+					)
+				);
+				eligibleNobles.forEach((n) => (n.owner = player));
+				return nobles;
+			});
+		}
+	};
+}
+
+export const nobleStore = await createNobleStore();
 
 function createTokenStore() {
 	const initialTokens = [];
@@ -39,7 +74,7 @@ function createTokenStore() {
 				});
 				return true;
 			}
-			return false;
+			return true;
 		}
 	};
 }
@@ -74,7 +109,7 @@ function createCardStore() {
 			update(($cards) => {
 				const theCard = $cards.find((c) => c.index === cardIndex);
 				const isPaymentAccepted = tokenStore.pay(buyer, theCard.costs, getDiscounts(buyer, $cards));
-				return isPaymentAccepted
+				const returnValue = isPaymentAccepted
 					? [
 							...$cards.filter((c) => c.index !== cardIndex),
 							{
@@ -83,6 +118,11 @@ function createCardStore() {
 							}
 					  ]
 					: $cards;
+
+				// After each purchase, check if player is eligible for any nobles using the checkForNoble function
+				nobleStore.checkForNobles(buyer, returnValue);
+
+				return returnValue;
 			});
 		}
 	};

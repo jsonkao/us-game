@@ -1,15 +1,15 @@
 <script>
 	import Card from '$lib/Card.svelte';
 	import Tokens from '$lib/Tokens.svelte';
-	import { cardStore } from '$lib/stores.js';
+	import { cardStore, nobleStore } from '$lib/stores.js';
 
 	import { flip } from 'svelte/animate';
-	import { slide } from 'svelte/transition';
 	import { send, receive } from '$lib/transition.js';
 
 	export let player = 0;
 
 	$: cards = $cardStore.filter((card) => card.owner === player);
+	$: nobles = $nobleStore.filter((card) => card.owner === player);
 </script>
 
 <div>
@@ -23,6 +23,14 @@
 						<Card {card} />
 					</div>
 				{/each}
+			</div>
+		{/each}
+	</div>
+
+	<div class="nobles-container" style="flex-direction: {player ? 'row-reverse' : 'row'}">
+		{#each nobles as card (card.index)}
+			<div in:receive={{ key: card.index }} out:send={{ key: card.index }} animate:flip>
+				<Card {card} isNoble />
 			</div>
 		{/each}
 	</div>
@@ -40,7 +48,7 @@
 		grid-template-columns: 1fr;
 		grid-auto-rows: 38px;
 		width: 0;
-		transition-duration: .3s;
+		transition-duration: 0.3s;
 	}
 
 	.has-cards {
