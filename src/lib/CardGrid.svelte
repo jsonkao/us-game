@@ -12,12 +12,14 @@
 
 <div class="card-grid">
 	{#each levels as level}
-		<div class="stack">
-			<p>
-				{cardsForGrid.filter((c) => c.level === level).length - 4} cards
-			</p>
-			<p>{@html '&bull;'.repeat(level + 1)}</p>
-		</div>
+		{#if cardsForGrid.filter((c) => c.level === level).length > 4}
+			<div class="stack">
+				<p>
+					{cardsForGrid.filter((c) => c.level === level).length - 4} cards
+				</p>
+				<p>{@html '&bull;'.repeat(level + 1)}</p>
+			</div>
+		{/if}
 
 		{#each cardsForGrid.filter((c) => c.level === level).slice(0, 4) as card (card.index)}
 			<div in:receive={{ key: card.index }} out:send={{ key: card.index }} animate:flip>

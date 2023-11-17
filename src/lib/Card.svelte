@@ -4,19 +4,22 @@
 
 	export let card = {};
 	export let isNoble = false;
-	export let isPurchased = false;
+	export let image = '';
 
 	let { costs, score, index, discount } = card;
+	let isPurchased = card.owner !== 'bank';
+
+	$: image && console.log(image);
 </script>
 
 <button
 	class="card"
 	class:isNoble
 	class:isPurchased
-	style="--card-color: {chipColors[discount]}"
+	style="--card-color: {chipColors[discount]}; --image: url('{image}')"
 	on:click={() => cardStore.purchase($playerStore, index)}
 >
-	<p class="score" style="color: {chipTextColors[discount] || '#121212'}">
+	<p class="score" style="color: {chipTextColors[discount] || (isNoble ? '#fff' : '#121212')}">
 		{#if score > 0}
 			{score}
 		{/if}
@@ -36,34 +39,41 @@
 </button>
 
 <style>
-	.card {
+	button {
 		all: unset;
 		width: var(--card-width);
 		height: var(--card-height);
 		background: var(--card-color);
+		background-size: cover;
+		background-repeat: no-repeat;
 		position: relative;
 		border-radius: 4px;
 		box-shadow: var(--drop-shadow);
 
 		display: grid;
 		grid-template-columns: repeat(2, 50%);
+		transition-duration: 0.1s;
 	}
 
-	.card.isNoble {
+	button.isNoble {
 		height: var(--card-width);
+		background: var(--image, var(--card-color));
+		background-size: cover;
+		background-repeat: no-repeat;
 	}
 
-	.card.isPurchased {
+	button.isPurchased {
 		width: calc(var(--card-width) / 2);
 		height: calc(var(--card-height) / 2);
 	}
 
-	.card.isPurchased .score {
+	button.isPurchased .score {
 		font-size: 20px;
 	}
 
-	.card:hover {
+	button:hover {
 		cursor: pointer;
+		transform: translateY(-3px);
 	}
 
 	.score {
@@ -72,8 +82,11 @@
 		padding: 8px;
 	}
 
-	.costs {
+	button:not(.isNoble) .costs {
 		background: #fafafa;
+	}
+
+	.costs {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-end;

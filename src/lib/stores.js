@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import { cards } from '$lib/constants.json';
 
 function createTokenStore() {
@@ -11,27 +11,34 @@ function createTokenStore() {
 
 	return {
 		subscribe,
-		take: (newOwner, tokenIds) => {
-			update((tokens) => {
-				tokenIds.forEach((id) => {
-					tokens[id].owner = newOwner;
-				});
-				return tokens;
-			});
+		take: (newOwner, id) => {
+			update((tokens) => [
+				...tokens.filter((t) => t.id !== id),
+				{ ...tokens[id], owner: newOwner, lastModified: Date.now() }
+			]);
 		},
 		pay: (owner, costs, discounts) => {
-			try {
+			// Check if player has enough tokens
+			const playerTokens = get(tokenStore).filter((t) => t.owner === owner);
+			const hasEnoughTokens = costs.every((value, color) => {
+				const tokensOfColor = playerTokens.filter((t) => t.color === color);
+				return tokensOfColor.length >= value - discounts[color];
+			});
+
+			if (hasEnoughTokens) {
 				update((tokens) => {
 					costs.forEach((value, color) => {
-						for (let v = 0; v < value - discounts[color]; v++)
-							tokens.find((t) => t.color === color && t.owner === owner).owner = 'bank';
+						for (let v = 0; v < value - discounts[color]; v++) {
+							const token = tokens.find((t) => t.color === color && t.owner === owner);
+							token.owner = 'bank';
+							token.lastModified = Date.now();
+						}
 					});
 					return tokens;
 				});
 				return true;
-			} catch (e) {
-				return true;
 			}
+			return true;
 		}
 	};
 }

@@ -2,20 +2,21 @@
 	import CardGrid from '$lib/CardGrid.svelte';
 	import Card from '$lib/Card.svelte';
 	import PlayerHand from '$lib/PlayerHand.svelte';
-	import Bank from '$lib/Bank.svelte';
+	import Tokens from '$lib/Tokens.svelte';
 
 	import { playerStore } from '$lib/stores';
 
 	export let data;
 
 	let { nobles } = data;
+	const nobleImages = Object.keys(import.meta.glob('$lib/images/nobles/*'));
 </script>
 
 <div class="container">
 	<div class="switch-button">
 		<button on:click={playerStore.switchTurn}>Player {$playerStore + 1}'s turn. Switch.</button>
 	</div>
-	<Bank />
+	<Tokens owner="bank" />
 
 	<PlayerHand player={0} />
 	<CardGrid />
@@ -24,10 +25,9 @@
 	<div class="nobles">
 		<div>
 			{#each nobles as card}
-				<Card {card} isNoble />
+				<Card {card} isNoble image={nobleImages[+card.index % nobleImages.length]} />
 			{/each}
 		</div>
-		<p>Nobles</p>
 	</div>
 </div>
 
