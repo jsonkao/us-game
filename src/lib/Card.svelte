@@ -1,23 +1,31 @@
 <script>
 	import { chipColors, chipTextColors } from '$lib/colors.js';
 	import { cardStore, playerStore } from '$lib/stores.js';
+	import { base } from '$app/paths';
+	import { onMount } from 'svelte';
 
 	export let card = {};
 	export let isNoble = false;
-	export let image = '';
+	export let imagePromise;
 
 	let { costs, score, index, discount } = card;
 	let isPurchased = card.owner !== 'bank';
 
-	$: image && console.log(image);
+	let image;
+	onMount(async () => {
+		if (imagePromise) {
+			image = `--image: url('${base}${(await imagePromise).default}')`;
+		}
+	});
 </script>
 
 <button
 	class="card"
 	class:isNoble
 	class:isPurchased
-	style="--card-color: {chipColors[discount]}; --image: url('{image}')"
+	style="--card-color: {chipColors[discount]}; {image}"
 	on:click={() => cardStore.purchase($playerStore, index)}
+	disabled={isPurchased || isNoble}
 >
 	<p class="score" style="color: {chipTextColors[discount] || (isNoble ? '#fff' : '#121212')}">
 		{#if score > 0}
@@ -52,7 +60,7 @@
 
 		display: grid;
 		grid-template-columns: repeat(2, 50%);
-		transition-duration: 0.1s;
+		transition-duration: 0.2s;
 	}
 
 	button.isNoble {
@@ -71,9 +79,9 @@
 		font-size: 20px;
 	}
 
-	button:hover {
+	button:not(.isNoble):hover {
 		cursor: pointer;
-		transform: translateY(-3px);
+		transform: translateY(-2px);
 	}
 
 	.score {

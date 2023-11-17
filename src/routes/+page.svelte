@@ -9,7 +9,7 @@
 	export let data;
 
 	let { nobles } = data;
-	const nobleImages = Object.keys(import.meta.glob('$lib/images/nobles/*'));
+	const nobleImages = import.meta.glob('$lib/images/nobles/*');
 </script>
 
 <div class="container">
@@ -25,7 +25,13 @@
 	<div class="nobles">
 		<div>
 			{#each nobles as card}
-				<Card {card} isNoble image={nobleImages[+card.index % nobleImages.length]} />
+				<Card
+					{card}
+					isNoble
+					imagePromise={nobleImages[
+						Object.keys(nobleImages)[+card.index % Object.keys(nobleImages).length]
+					]()}
+				/>
 			{/each}
 		</div>
 	</div>

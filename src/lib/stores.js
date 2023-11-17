@@ -3,19 +3,20 @@ import { cards } from '$lib/constants.json';
 
 function createTokenStore() {
 	const initialTokens = [];
-	let uid = 0;
+	let index = 0;
 	for (let c = 0; c < 5; c++)
-		for (let i = 0; i < 4; i++) initialTokens.push({ color: c, owner: 'bank', id: uid++ });
+		for (let i = 0; i < 4; i++) initialTokens.push({ color: c, owner: 'bank', index: index++ });
 
 	const { subscribe, update } = writable(initialTokens);
 
 	return {
 		subscribe,
-		take: (newOwner, id) => {
-			update((tokens) => [
-				...tokens.filter((t) => t.id !== id),
-				{ ...tokens[id], owner: newOwner, lastModified: Date.now() }
-			]);
+		take: (newOwner, index) => {
+			update((tokens) => {
+				tokens[index].owner = newOwner;
+				tokens[index].lastModified = Date.now();
+				return tokens;
+			});
 		},
 		pay: (owner, costs, discounts) => {
 			// Check if player has enough tokens
@@ -38,7 +39,7 @@ function createTokenStore() {
 				});
 				return true;
 			}
-			return true;
+			return false;
 		}
 	};
 }

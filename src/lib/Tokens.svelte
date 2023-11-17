@@ -15,13 +15,13 @@
 		<div class="tokens">
 			{#each $tokenStore
 				.filter((token) => token.owner === owner && token.color === color)
-				.sort((b, a) => b.lastModified - a.lastModified) as token, i (token.id)}
+				.sort((b, a) => b.lastModified - a.lastModified) as { index } (index)}
 				<button
-					in:receive={{ key: token.id }}
-					out:send={{ key: token.id }}
+					in:receive={{ key: index }}
+					out:send={{ key: index }}
 					style="--color: {chipColors[color]};"
 					animate:flip
-					on:click={() => tokenStore.take($playerStore, token.id)}
+					on:click={() => tokenStore.take($playerStore, index)}
 				/>
 			{/each}
 		</div>
