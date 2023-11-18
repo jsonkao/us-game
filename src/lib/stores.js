@@ -157,7 +157,7 @@ if (browser) {
 		cluster: 'mt1'
 	});
 
-	const channel = pusher.subscribe('us-game');
+	const channel = pusher.subscribe('us-game-' + (dev ? 'dev' : 'prod'));
 	channel.bind('event', function (data) {
 		dispatch(data, false);
 	});

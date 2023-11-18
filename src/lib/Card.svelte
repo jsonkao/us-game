@@ -95,6 +95,36 @@
 		padding: 8px;
 	}
 
+	@media (max-width: 960px) {
+		button.isNoble {
+			grid-template-columns: 1fr;
+		}
+
+		button.isNoble > * {
+			grid-column: 1;
+			grid-row: 1;
+		}
+
+		button.isNoble .costs {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: 1fr 1fr;
+			justify-content: flex-end;
+		}
+
+button.isNoble .cost:first-child {
+	grid-column: 1 / -1;
+}
+
+button.isNoble .cost:last-child {
+	grid-column: 2;
+}
+
+		button.isNoble .cost {
+			justify-self: flex-end;
+		}
+	}
+
 	.cost {
 		width: var(--cost-size);
 		height: var(--cost-size);

@@ -1,4 +1,5 @@
 import { json } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 import Pusher from 'pusher';
 
 const pusher = new Pusher({
@@ -11,12 +12,12 @@ const pusher = new Pusher({
 
 export async function POST({ request }) {
 	try {
-	const { socketId, ...dispatchData } = await request.json();
+		const { socketId, ...dispatchData } = await request.json();
 
-	pusher.trigger('us-game', 'event', dispatchData, { socket_id: socketId });
+		pusher.trigger('us-game-' + (dev ? 'dev' : 'prod'), 'event', dispatchData, { socket_id: socketId });
 
-	return json({}, { status: 201 });}
-	catch (e) {
+		return json({}, { status: 201 });
+	} catch (e) {
 		console.error(e);
 	}
 }
