@@ -151,7 +151,7 @@ let pusher;
 let socketId;
 
 if (browser) {
-	Pusher.logToConsole = dev;
+	Pusher.logToConsole = dev || true;
 
 	pusher = new Pusher('cc106f833f29464ac282', {
 		cluster: 'mt1'
