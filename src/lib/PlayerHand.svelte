@@ -39,16 +39,23 @@
 <style>
 	.cards-container {
 		display: flex;
-		margin-top: 12px;
+		margin: 12px 0 16px;
 	}
 
 	.cards {
+		--row-height: 38px;
 		display: grid;
-		min-height: calc(var(--card-height) / 2);
+		min-height: var(--mini-card-height);
 		grid-template-columns: 1fr;
-		grid-auto-rows: 38px;
+		grid-auto-rows: var(--row-height);
 		width: 0;
 		transition-duration: 0.3s;
+		padding-bottom: calc(var(--mini-card-height) - var(--row-height));
+	}
+
+	.nobles-container {
+		display: flex;
+		gap: 10px;
 	}
 
 	.has-cards {

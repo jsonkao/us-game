@@ -1,10 +1,12 @@
 <script>
 	import { chipColors } from '$lib/colors.js';
-	import { tokenStore, playerStore } from '$lib/stores.js';
+	import { tokenStore, playerStore, dispatch } from '$lib/stores.js';
 	import { flip } from 'svelte/animate';
 	import { send, receive } from '$lib/transition.js';
 
 	export let owner;
+
+	$: tokens = $tokenStore.filter((token) => token.owner === owner);
 </script>
 
 <div
@@ -12,16 +14,21 @@
 	style="justify-content: {owner === 'bank' ? 'center' : owner ? 'flex-end' : 'flex-start'}"
 >
 	{#each [0, 1, 2, 3, 4] as color}
-		<div class="tokens">
-			{#each $tokenStore
-				.filter((token) => token.owner === owner && token.color === color)
+		<div class="tokens" class:has-tokens={tokens.filter((t) => t.color === color).length}>
+			{#each tokens
+				.filter((t) => t.color === color)
 				.sort((b, a) => b.lastModified - a.lastModified) as { index } (index)}
 				<button
 					in:receive={{ key: index }}
 					out:send={{ key: index }}
 					style="--color: {chipColors[color]};"
 					animate:flip
-					on:click={() => tokenStore.take(owner === 'bank' ? $playerStore : 'bank', index)}
+					on:click={() =>
+						dispatch({
+							storeName: 'tokenStore',
+							action: 'take',
+							args: [owner === 'bank' ? $playerStore : 'bank', index]
+						})}
 				/>
 			{/each}
 		</div>
@@ -41,6 +48,12 @@
 		grid-template-columns: 1fr;
 		grid-template-rows: repeat(4, var(--row-height));
 		transition-duration: 0.15s;
+		width: 0;
+		transition-duration: 0.3s;
+	}
+
+	.has-tokens {
+		width: var(--token-size);
 	}
 
 	button {

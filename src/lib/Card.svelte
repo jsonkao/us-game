@@ -1,6 +1,6 @@
 <script>
 	import { chipColors, chipTextColors } from '$lib/colors.js';
-	import { cardStore, playerStore } from '$lib/stores.js';
+	import { playerStore, dispatch } from '$lib/stores.js';
 
 	export let card = {};
 	export let isNoble = false;
@@ -14,7 +14,8 @@
 	class:isNoble
 	class:isPurchased
 	style="--card-color: {chipColors[discount]}; --image: url('{image}')"
-	on:click={() => cardStore.purchase($playerStore, index)}
+	on:click={() =>
+		dispatch({ storeName: 'cardStore', action: 'purchase', args: [$playerStore, index] })}
 	disabled={isPurchased || isNoble}
 >
 	<p class="score" style="color: {chipTextColors[discount] || (isNoble ? '#fff' : '#121212')}">
@@ -69,7 +70,7 @@
 		font-size: 20px;
 	}
 
-	button:not(.isNoble):hover {
+	button:not(.isNoble):not(.isPurchased):hover {
 		cursor: pointer;
 		transform: translateY(-2px);
 	}

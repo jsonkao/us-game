@@ -1,18 +1,19 @@
 import { writable, get } from 'svelte/store';
+import { browser, dev } from '$app/environment';
+import Pusher from 'pusher-js';
 import { cards, nobles } from '$lib/constants.json';
 
 const nobleImages = import.meta.glob('$lib/images/nobles/*');
 
 async function createNobleStore() {
 	const initialNobles = await Promise.all(
-		nobles
-			.sort(() => Math.random() - 0.5)
-			.slice(0, 3)
-			.map(async (n) => ({
-				...n,
-				owner: 'bank',
-				image: (await nobleImages[Object.keys(nobleImages)[+n.index % Object.keys(nobleImages).length]]()).default
-			}))
+		nobles.map(async (n) => ({
+			...n,
+			owner: 'bank',
+			image: (
+				await nobleImages[Object.keys(nobleImages)[+n.index % Object.keys(nobleImages).length]]()
+			).default
+		}))
 	);
 	const { subscribe, update } = writable(initialNobles);
 
@@ -29,6 +30,15 @@ async function createNobleStore() {
 				);
 				eligibleNobles.forEach((n) => (n.owner = player));
 				return nobles;
+			});
+		},
+		shuffle: (seed) => {
+			update((nobles) => {
+				function random() {
+					const x = Math.sin(seed++) * 10000;
+					return x - Math.floor(x);
+				}
+				return nobles.sort(() => random() - 0.5).slice(0, 3);
 			});
 		}
 	};
@@ -74,7 +84,7 @@ function createTokenStore() {
 				});
 				return true;
 			}
-			return true;
+			return false;
 		}
 	};
 }
@@ -99,9 +109,7 @@ function createCurrentPlayerStore(numPlayers = 2) {
 export const tokenStore = createTokenStore();
 
 function createCardStore() {
-	const { subscribe, update } = writable(
-		cards.map((c) => ({ ...c, owner: 'bank' })).sort(() => Math.random() - 0.5)
-	);
+	const { subscribe, update } = writable(cards.map((c) => ({ ...c, owner: 'bank' })));
 
 	return {
 		subscribe,
@@ -124,8 +132,61 @@ function createCardStore() {
 
 				return returnValue;
 			});
+		},
+		shuffle: (seed) => {
+			update((cards) => {
+				function random() {
+					const x = Math.sin(seed++) * 10000;
+					return x - Math.floor(x);
+				}
+				return cards.sort(() => random() - 0.5);
+			});
 		}
 	};
 }
 
 export const cardStore = createCardStore();
+
+let pusher;
+let socketId;
+
+if (browser) {
+	Pusher.logToConsole = dev;
+
+	pusher = new Pusher('cc106f833f29464ac282', {
+		cluster: 'mt1'
+	});
+
+	const channel = pusher.subscribe('us-game');
+	channel.bind('event', function (data) {
+		dispatch(data, false);
+	});
+
+	pusher.connection.bind('connected', () => {
+		socketId = pusher.connection.socket_id;
+	});
+}
+
+const stores = {
+	cardStore,
+	tokenStore,
+	nobleStore,
+	playerStore
+};
+
+export async function dispatch(dispatchData, shouldPublishEvent = true) {
+	const { storeName, action, args = [] } = dispatchData;
+
+	if (!stores[storeName]) throw new Error(`Invalid store ${storeName}`);
+	if (!stores[storeName][action]) throw new Error(`Invalid action ${action} of store ${storeName}`);
+
+	stores[storeName][action](...args);
+
+	if (shouldPublishEvent) {
+		await fetch('/events', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ ...dispatchData, socketId })
+		});
+	}
+}

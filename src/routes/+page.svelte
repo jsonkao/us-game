@@ -5,12 +5,16 @@
 	import Tokens from '$lib/Tokens.svelte';
 	import { onMount } from 'svelte';
 
-	import { playerStore, nobleStore } from '$lib/stores';
+	import { playerStore, nobleStore, cardStore, dispatch } from '$lib/stores';
 
-	// When the Enter key is pressed, switch player turn
+	export let data;
+	let { seed } = data;
+	nobleStore.shuffle(seed);
+	cardStore.shuffle(seed);
+
 	onMount(() => {
 		window.addEventListener('keydown', (e) => {
-			if (e.key === 'Enter') playerStore.switchTurn();
+			if (e.key === 'Enter') dispatch({ storeName: 'playerStore', action: 'switchTurn' });
 		});
 	});
 </script>
@@ -27,10 +31,7 @@
 		<div>
 			{#each $nobleStore as card}
 				{#if card.owner === 'bank'}
-					<Card
-						{card}
-						isNoble
-					/>
+					<Card {card} isNoble />
 				{/if}
 			{/each}
 		</div>
@@ -62,6 +63,7 @@
 	.container {
 		--card-width: 110px;
 		--card-height: 160px;
+		--mini-card-height: calc(var(--card-height) / 2);
 		--token-size: 50px;
 		--drop-shadow: 0 -3px 2px rgba(0, 0, 0, 0.2);
 		--cost-size: 12px;
