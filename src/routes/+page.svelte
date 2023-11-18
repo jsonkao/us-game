@@ -95,7 +95,7 @@
 			--card-height: 120px;
 			--token-size: 30px;
 			--cost-size: 10px;
-			--cost-padding: px;
+			--cost-padding: 7px;
 		}
 	}
 </style>
