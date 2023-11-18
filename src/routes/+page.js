@@ -1,3 +1,5 @@
+import { browser } from '$app/environment';
+
 export function load({ url }) {
-	return { seed: +url.searchParams.get('seed') || 1};
+	return { seed: browser ? +url.searchParams.get('seed') || 1 : 1 };
 }
