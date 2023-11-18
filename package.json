@@ -11,8 +11,7 @@
 		"deploy": "pnpm build && gh-pages -d build"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^2.0.0",
-		"@sveltejs/adapter-static": "^2.0.3",
+		"@sveltejs/adapter-vercel": "^3.1.0",
 		"@sveltejs/kit": "^1.27.4",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^9.0.0",
