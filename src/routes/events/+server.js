@@ -10,9 +10,13 @@ const pusher = new Pusher({
 });
 
 export async function POST({ request }) {
+	try {
 	const { socketId, ...dispatchData } = await request.json();
 
 	pusher.trigger('us-game', 'event', dispatchData, { socket_id: socketId });
 
-	return json({}, { status: 201 });
+	return json({}, { status: 201 });}
+	catch (e) {
+		console.error(e);
+	}
 }
