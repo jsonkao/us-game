@@ -112,13 +112,13 @@
 			justify-content: flex-end;
 		}
 
-button.isNoble .cost:first-child {
-	grid-column: 1 / -1;
-}
+		button.isNoble .cost:first-child {
+			grid-column: 1 / -1;
+		}
 
-button.isNoble .cost:last-child {
-	grid-column: 2;
-}
+		button.isNoble .cost:last-child {
+			grid-column: 2;
+		}
 
 		button.isNoble .cost {
 			justify-self: flex-end;

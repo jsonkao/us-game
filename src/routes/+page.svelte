@@ -3,25 +3,22 @@
 	import Card from '$lib/Card.svelte';
 	import PlayerHand from '$lib/PlayerHand.svelte';
 	import Tokens from '$lib/Tokens.svelte';
-	import { onMount } from 'svelte';
-
 	import { playerStore, nobleStore, cardStore, dispatch } from '$lib/stores';
 
 	export let data;
 	let { seed } = data;
 	nobleStore.shuffle(seed);
 	cardStore.shuffle(seed);
-
-	onMount(() => {
-		window.addEventListener('keydown', (e) => {
-			if (e.key === 'Enter') dispatch({ storeName: 'playerStore', action: 'switchTurn' });
-		});
-	});
 </script>
 
 <div class="container">
 	<Tokens owner="bank" />
-	<p class="switch-turn">Player {$playerStore + 1}&#8217;s turn. Press Enter to switch turns.</p>
+	<p class="switch-turn">
+		Player {$playerStore + 1}&#8217;s turn.
+		<button on:click={() => dispatch({ storeName: 'playerStore', action: 'switchTurn' })}>
+			Switch.
+		</button>
+	</p>
 
 	<PlayerHand player={0} />
 	<CardGrid />
@@ -48,6 +45,7 @@
 
 	:global(p) {
 		margin: 0;
+		font-size: 14px;
 	}
 
 	:global(button:hover) {
@@ -58,6 +56,18 @@
 		text-align: center;
 		grid-column: 1 / -1;
 		margin: 15px 0;
+	}
+
+	.switch-turn button {
+		all: unset;
+		font-size: inherit;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+		transition-duration: .2s;
+	}
+
+	.switch-turn button:hover {
+		border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+		cursor: pointer;
 	}
 
 	.container {

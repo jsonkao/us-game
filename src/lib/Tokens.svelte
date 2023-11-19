@@ -53,7 +53,7 @@
 	}
 
 	.has-tokens {
-		width: var(--token-size);
+		width: calc(var(--token-size) + 4px);
 	}
 
 	button {
