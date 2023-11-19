@@ -45,7 +45,7 @@
 
 	:global(p) {
 		margin: 0;
-		font-size: 14px;
+		font-size: 16px;
 	}
 
 	:global(button:hover) {
@@ -62,7 +62,7 @@
 		all: unset;
 		font-size: inherit;
 		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-		transition-duration: .2s;
+		transition-duration: 0.2s;
 	}
 
 	.switch-turn button:hover {
@@ -106,6 +106,12 @@
 			--token-size: 30px;
 			--cost-size: 10px;
 			--cost-padding: 7px;
+			padding: 30px 20px;
+		}
+
+		:global(p) {
+			margin: 0;
+			font-size: 14px;
 		}
 	}
 </style>
