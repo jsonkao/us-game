@@ -6,8 +6,11 @@
 	export let card: Card | Noble;
 	export let isNoble = false;
 
-	let { costs, score, index, discount, image } = card;
+	let { costs, score, index } = card;
 	let isPurchased = card.owner !== 'bank' && !isNoble;
+
+	let image = (card as Noble).image;
+	let discount = (card as Card).discount;
 </script>
 
 <button

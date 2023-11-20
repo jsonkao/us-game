@@ -178,8 +178,8 @@ export async function dispatch(dispatchData: Dispatch, shouldPublishEvent = true
 	if (!(action in stores[storeName]))
 		throw new Error(`Invalid action ${action} of store ${storeName}`);
 
-	const fn: (...args: any[]) => any = stores[storeName][action];
-	fn(...args);
+	//@ts-ignore
+	stores[storeName][action]();
 
 	if (shouldPublishEvent) {
 		await fetch('/events', {
