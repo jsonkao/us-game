@@ -2,7 +2,6 @@
 	import { chipColors, chipTextColors } from '$lib/colors.js';
 	import { playerStore } from '$lib/stores';
 	import { dispatch } from '$lib/utils';
-	import type { Card, Noble } from '$lib/types';
 
 	export let card: Card | Noble;
 	export let isNoble = false;

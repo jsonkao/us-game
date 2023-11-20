@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+import { json, error, type RequestHandler } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import Pusher from 'pusher';
 
@@ -10,7 +10,7 @@ const pusher = new Pusher({
 	useTLS: true
 });
 
-export async function POST({ request }) {
+export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const { socketId, ...dispatchData } = await request.json();
 
@@ -20,6 +20,6 @@ export async function POST({ request }) {
 
 		return json({}, { status: 201 });
 	} catch (e) {
-		console.error(e);
+		throw error(503, 'Unable to send event to Pusher');
 	}
-}
+};

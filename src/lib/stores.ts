@@ -1,7 +1,6 @@
 import { writable, get } from 'svelte/store';
 import { cards, nobles } from '$lib/constants.json';
 import { shuffle } from '$lib/utils';
-import type { Card, Noble, Token, Owner } from '$lib/types';
 
 const nobleImages: Record<string, () => Promise<any>> = import.meta.glob('$lib/images/nobles/*');
 

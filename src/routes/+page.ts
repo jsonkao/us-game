@@ -1,10 +1,10 @@
 import { browser } from '$app/environment';
-import type { LoadEvent } from '@sveltejs/kit';
+import type { PageLoad } from './$types';
 
-export function load({ url }: LoadEvent) {
+export const load: PageLoad = ({ url }) => {
 	let seed = 1;
 	if (browser && url.searchParams) {
 		seed = parseInt(url.searchParams.get('seed') || '1');
 	}
-	return { seed }
-}
+	return { seed };
+};

@@ -3,7 +3,6 @@ import { quintOut } from 'svelte/easing';
 import { browser, dev } from '$app/environment';
 import Pusher, { Channel } from 'pusher-js';
 import * as stores from '$lib/stores';
-import type { Dispatch } from '$lib/types';
 
 let pusher: Pusher;
 let socketId: string;

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { PageData } from './$types';
 	import CardGrid from '$lib/CardGrid.svelte';
 	import Card from '$lib/Card.svelte';
 	import PlayerHand from '$lib/PlayerHand.svelte';
@@ -7,7 +6,7 @@
 	import { playerStore, nobleStore, cardStore } from '$lib/stores';
 	import { dispatch } from '$lib/utils';
 
-	export let data: PageData;
+	export let data;
 	let { seed } = data;
 	nobleStore.shuffle(seed);
 	cardStore.shuffle(seed);

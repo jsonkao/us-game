@@ -4,7 +4,6 @@
 	import { dispatch } from '$lib/utils';
 	import { flip } from 'svelte/animate';
 	import { send, receive } from '$lib/utils';
-	import type { Owner } from './types';
 
 	export let owner: Owner;
 
