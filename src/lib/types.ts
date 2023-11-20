@@ -15,7 +15,7 @@ export type Noble = {
 	index: number;
 	owner: Owner;
 	image: string;
-}
+};
 
 export type Token = {
 	color: number;

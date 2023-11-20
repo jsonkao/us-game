@@ -43,7 +43,8 @@ function createTokenStore() {
 	const initialTokens: Array<Token> = [];
 	let index = 0;
 	for (let c = 0; c < 5; c++)
-		for (let i = 0; i < 4; i++) initialTokens.push({ color: c, owner: 'bank', index: index++, lastModified: 0 });
+		for (let i = 0; i < 4; i++)
+			initialTokens.push({ color: c, owner: 'bank', index: index++, lastModified: 0 });
 
 	const { subscribe, update } = writable(initialTokens);
 
@@ -174,7 +175,8 @@ export async function dispatch(dispatchData: Dispatch, shouldPublishEvent = true
 	const { storeName, action, args = [] } = dispatchData;
 
 	if (!stores[storeName]) throw new Error(`Invalid store ${storeName}`);
-	if (!(action in stores[storeName])) throw new Error(`Invalid action ${action} of store ${storeName}`);
+	if (!(action in stores[storeName]))
+		throw new Error(`Invalid action ${action} of store ${storeName}`);
 
 	const fn: (...args: any[]) => any = stores[storeName][action];
 	fn(...args);

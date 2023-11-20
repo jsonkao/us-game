@@ -17,7 +17,9 @@
 	<div class="switch-turn" class:left={$playerStore === 0}>
 		<p>
 			Player {$playerStore + 1}&#8217;s turn.
-			<button on:click={() => dispatch({ storeName: 'playerStore', action: 'switchTurn', args: [] })}>
+			<button
+				on:click={() => dispatch({ storeName: 'playerStore', action: 'switchTurn', args: [] })}
+			>
 				Switch.
 			</button>
 		</p>

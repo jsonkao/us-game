@@ -14,7 +14,9 @@ export async function POST({ request }) {
 	try {
 		const { socketId, ...dispatchData } = await request.json();
 
-		pusher.trigger('us-game-' + (dev ? 'dev' : 'prod'), 'event', dispatchData, { socket_id: socketId });
+		pusher.trigger('us-game-' + (dev ? 'dev' : 'prod'), 'event', dispatchData, {
+			socket_id: socketId
+		});
 
 		return json({}, { status: 201 });
 	} catch (e) {
