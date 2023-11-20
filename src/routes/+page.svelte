@@ -13,12 +13,14 @@
 
 <div class="container">
 	<Tokens owner="bank" />
-	<p class="switch-turn">
-		Player {$playerStore + 1}&#8217;s turn.
-		<button on:click={() => dispatch({ storeName: 'playerStore', action: 'switchTurn' })}>
-			Switch.
-		</button>
-	</p>
+	<div class="switch-turn" class:left={$playerStore === 0}>
+		<p>
+			Player {$playerStore + 1}&#8217;s turn.
+			<button on:click={() => dispatch({ storeName: 'playerStore', action: 'switchTurn' })}>
+				Switch.
+			</button>
+		</p>
+	</div>
 
 	<PlayerHand player={0} />
 	<CardGrid />
@@ -55,7 +57,9 @@
 	.switch-turn {
 		text-align: center;
 		grid-column: 1 / -1;
-		margin: 15px 0;
+		grid-row: 1;
+		position: relative;
+		pointer-events: none;
 	}
 
 	.switch-turn button {
@@ -63,11 +67,27 @@
 		font-size: inherit;
 		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 		transition-duration: 0.2s;
+		pointer-events: all;
 	}
 
 	.switch-turn button:hover {
 		border-bottom: 1px solid rgba(0, 0, 0, 0.6);
 		cursor: pointer;
+	}
+
+	.switch-turn p {
+		position: absolute;
+		left: 0;
+		transition-duration: 0.3s;
+		white-space: pre;
+		display: flex;
+		align-items: start;
+		gap: 4px;
+	}
+
+	.switch-turn:not(.left) p {
+		left: 100%;
+		transform: translateX(-100%);
 	}
 
 	.container {
@@ -78,8 +98,9 @@
 		--drop-shadow: 0 -3px 2px rgba(0, 0, 0, 0.2);
 		--cost-size: 12px;
 		--cost-padding: 8px;
+		--card-grid-gap: 10px;
 
-		padding: 50px 30px;
+		padding: 40px 30px;
 		display: grid;
 		grid-template-columns: 1fr min-content 1fr;
 		column-gap: 10px;
@@ -91,7 +112,7 @@
 		align-items: center;
 		gap: 8px;
 		grid-column: 1 / -1;
-		margin-top: 35px;
+		margin-top: 50px;
 	}
 
 	.nobles div {
@@ -101,17 +122,19 @@
 
 	@media (max-width: 960px) {
 		.container {
-			--card-width: 80px;
-			--card-height: 120px;
+			--card-width: 70px;
+			--card-height: 100px;
 			--token-size: 30px;
 			--cost-size: 10px;
-			--cost-padding: 7px;
-			padding: 30px 20px;
+			--cost-padding: 5px;
+			--card-grid-gap: 6px;
+			padding: 20px 15px;
+			column-gap: 6px;
 		}
 
 		:global(p) {
 			margin: 0;
-			font-size: 14px;
+			font-size: 13px;
 		}
 	}
 </style>

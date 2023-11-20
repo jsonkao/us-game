@@ -31,12 +31,10 @@
 
 <style>
 	.card-grid {
-		--column-gap: 10px;
-
-		width: calc(5 * var(--card-width) + 4 * var(--column-gap));
+		width: calc(5 * var(--card-width) + 4 * var(--card-grid-gap));
 		display: grid;
 		grid-template-columns: repeat(5, var(--card-width));
-		gap: var(--column-gap);
+		gap: var(--card-grid-gap);
 	}
 
 	.stack {

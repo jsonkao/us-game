@@ -135,20 +135,24 @@ let pusher;
 let socketId;
 
 if (browser) {
-	Pusher.logToConsole = dev || true;
+	try {
+		Pusher.logToConsole = dev || true;
 
-	pusher = new Pusher('cc106f833f29464ac282', {
-		cluster: 'mt1'
-	});
+		pusher = new Pusher('cc106f833f29464ac282', {
+			cluster: 'mt1'
+		});
 
-	const channel = pusher.subscribe('us-game-' + (dev ? 'dev' : 'prod'));
-	channel.bind('event', function (data) {
-		dispatch(data, false);
-	});
+		const channel = pusher.subscribe('us-game-' + (dev ? 'dev' : 'prod'));
+		channel.bind('event', function (data) {
+			dispatch(data, false);
+		});
 
-	pusher.connection.bind('connected', () => {
-		socketId = pusher.connection.socket_id;
-	});
+		pusher.connection.bind('connected', () => {
+			socketId = pusher.connection.socket_id;
+		});
+	} catch (e) {
+		console.error('Pusher error', e);
+	}
 }
 
 const stores = {

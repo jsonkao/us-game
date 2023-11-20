@@ -41,6 +41,8 @@
 		grid-column: 1 / -1;
 		display: flex;
 		height: calc(var(--token-size) + var(--row-height) * 3);
+		margin-bottom: 15px;
+		grid-row: 1;
 	}
 
 	.tokens {
