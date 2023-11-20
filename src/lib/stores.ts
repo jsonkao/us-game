@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store';
 import { cards, nobles } from '$lib/constants.json';
-import { shuffle } from '$lib/utils';
+import { shuffle, seed } from '$lib/utils';
 
 const nobleImages: Record<string, () => Promise<any>> = import.meta.glob('$lib/images/nobles/*');
 
@@ -14,7 +14,7 @@ async function createNobleStore() {
 			).default
 		}))
 	);
-	const { subscribe, update } = writable(initialNobles);
+	const { subscribe, update } = writable(shuffle(initialNobles, seed).slice(0, 3));
 
 	return {
 		subscribe,
@@ -30,8 +30,7 @@ async function createNobleStore() {
 				eligibleNobles.forEach((n) => (n.owner = player));
 				return nobles;
 			});
-		},
-		shuffle: (seed: number) => update((nobles) => shuffle(nobles, seed).slice(0, 3))
+		}
 	};
 }
 
@@ -103,11 +102,11 @@ function createCurrentPlayerStore(numPlayers = 2) {
 export const tokenStore = createTokenStore();
 
 function createCardStore() {
-	const initialCards: Array<Card> = cards.map((c, i) => ({
+	const initialCards: Array<Card> = cards.map((c) => ({
 		...c,
 		owner: 'bank'
 	}));
-	const { subscribe, update } = writable(initialCards);
+	const { subscribe, update } = writable(shuffle(initialCards, seed));
 
 	return {
 		subscribe,
@@ -131,8 +130,7 @@ function createCardStore() {
 
 				return returnValue;
 			});
-		},
-		shuffle: (seed: number) => update((cards) => shuffle(cards, seed))
+		}
 	};
 }
 

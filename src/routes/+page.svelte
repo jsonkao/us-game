@@ -3,13 +3,9 @@
 	import Card from '$lib/Card.svelte';
 	import PlayerHand from '$lib/PlayerHand.svelte';
 	import Tokens from '$lib/Tokens.svelte';
-	import { playerStore, nobleStore, cardStore } from '$lib/stores';
+	import { playerStore, nobleStore } from '$lib/stores';
 	import { dispatch } from '$lib/utils';
-
-	export let data;
-	let { seed } = data;
-	nobleStore.shuffle(seed);
-	cardStore.shuffle(seed);
+	import { browser } from '$app/environment';
 </script>
 
 <div class="container">
@@ -29,7 +25,7 @@
 	<CardGrid />
 	<PlayerHand player={1} />
 
-	<div class="nobles">
+	<div class="nobles" style="opacity: {+browser}">
 		<div>
 			{#each $nobleStore as card}
 				{#if card.owner === 'bank'}
@@ -116,6 +112,7 @@
 		gap: 8px;
 		grid-column: 1 / -1;
 		margin-top: 50px;
+		transition-duration: .2s;
 	}
 
 	.nobles div {

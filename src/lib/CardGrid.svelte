@@ -1,16 +1,17 @@
 <script lang="ts">
-	import Card from '$lib/Card.svelte';
-	import { cardStore } from '$lib/stores';
-
 	import { flip } from 'svelte/animate';
+	import { browser } from '$app/environment';
+
+	import { cardStore } from '$lib/stores';
 	import { send, receive } from '$lib/utils';
+	import Card from '$lib/Card.svelte';
 
 	let levels = [2, 1, 0];
 
 	$: cardsForGrid = $cardStore.filter((c) => c.owner === 'bank');
 </script>
 
-<div class="card-grid">
+<div class="card-grid" style="opacity: {+browser}">
 	{#each levels as level}
 		{#if cardsForGrid.filter((c) => c.level === level).length > 4}
 			<div class="stack">
@@ -35,6 +36,7 @@
 		display: grid;
 		grid-template-columns: repeat(5, var(--card-width));
 		gap: var(--card-grid-gap);
+		transition-duration: .2s;
 	}
 
 	.stack {

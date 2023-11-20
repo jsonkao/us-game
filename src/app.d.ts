@@ -10,31 +10,30 @@ declare global {
 
 	type Owner = 'bank' | number;
 
-	type Card = {
+	interface BaseCard {
 		costs: Array<number>;
 		score: number;
 		index: number;
+		owner: Owner;
+	}
+
+	interface Card extends BaseCard {
 		level: number;
 		discount: number;
-		owner: Owner;
 	};
 
-	type Noble = {
-		costs: Array<number>;
-		score: number;
-		index: number;
-		owner: Owner;
+	interface Noble extends BaseCard {
 		image: string;
 	};
 
-	type Token = {
+	interface Token {
 		color: number;
 		owner: string | number;
 		index: number;
 		lastModified: number;
 	};
 
-	type Dispatch = {
+	interface Dispatch {
 		storeName: 'cardStore' | 'tokenStore' | 'nobleStore' | 'playerStore';
 		action: string;
 		args: Array<any>;

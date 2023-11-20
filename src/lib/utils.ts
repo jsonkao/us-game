@@ -4,6 +4,14 @@ import { browser, dev } from '$app/environment';
 import Pusher, { Channel } from 'pusher-js';
 import * as stores from '$lib/stores';
 
+/* Seed */
+
+export const seed = browser
+	? parseInt(new URLSearchParams(window.location.search).get('seed') || '1')
+	: 1;
+
+/* Web socket */
+
 let pusher: Pusher;
 let socketId: string;
 
@@ -15,7 +23,7 @@ if (browser) {
 			cluster: 'mt1'
 		});
 
-		const channel: Channel = pusher.subscribe('us-game-' + (dev ? 'dev' : 'prod'));
+		const channel: Channel = pusher.subscribe(`us-game-${seed}-${dev ? 'dev' : 'prod'}`);
 		channel.bind('event', function (data: Dispatch) {
 			dispatch(data, false);
 		});
@@ -69,7 +77,7 @@ export const [send, receive] = crossfade({
 
 /* Seeded shuffle function taken from https://stackoverflow.com/a/53758827 */
 
-export function shuffle(array: Array<any>, seed: number) {
+export function shuffle<Type>(array: Array<Type>, seed: number): Array<Type> {
 	// <-- ADDED ARGUMENT
 	var m = array.length,
 		t,
