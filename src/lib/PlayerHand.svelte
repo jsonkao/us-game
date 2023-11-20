@@ -4,7 +4,7 @@
 	import { cardStore, nobleStore } from '$lib/stores';
 
 	import { flip } from 'svelte/animate';
-	import { send, receive } from '$lib/transition.js';
+	import { send, receive } from '$lib/utils';
 
 	export let player = 0;
 

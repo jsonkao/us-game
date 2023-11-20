@@ -4,7 +4,8 @@
 	import Card from '$lib/Card.svelte';
 	import PlayerHand from '$lib/PlayerHand.svelte';
 	import Tokens from '$lib/Tokens.svelte';
-	import { playerStore, nobleStore, cardStore, dispatch } from '$lib/stores.js';
+	import { playerStore, nobleStore, cardStore } from '$lib/stores';
+	import { dispatch } from '$lib/utils';
 
 	export let data: PageData;
 	let { seed } = data;

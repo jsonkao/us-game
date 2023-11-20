@@ -1,8 +1,7 @@
 import { writable, get } from 'svelte/store';
-import { browser, dev } from '$app/environment';
-import Pusher, { Channel } from 'pusher-js';
 import { cards, nobles } from '$lib/constants.json';
-import type { Card, Noble, Token, Owner, Dispatch } from '$lib/types';
+import { shuffle } from '$lib/utils';
+import type { Card, Noble, Token, Owner } from '$lib/types';
 
 const nobleImages: Record<string, () => Promise<any>> = import.meta.glob('$lib/images/nobles/*');
 
@@ -139,80 +138,3 @@ function createCardStore() {
 }
 
 export const cardStore = createCardStore();
-
-let pusher: Pusher;
-let socketId: string;
-
-if (browser) {
-	try {
-		Pusher.logToConsole = dev || true;
-
-		pusher = new Pusher('cc106f833f29464ac282', {
-			cluster: 'mt1'
-		});
-
-		const channel: Channel = pusher.subscribe('us-game-' + (dev ? 'dev' : 'prod'));
-		channel.bind('event', function (data: Dispatch) {
-			dispatch(data, false);
-		});
-
-		pusher.connection.bind('connected', () => {
-			socketId = pusher.connection.socket_id;
-		});
-	} catch (e) {
-		console.error('Pusher error', e);
-	}
-}
-
-const stores = {
-	cardStore,
-	tokenStore,
-	nobleStore,
-	playerStore
-};
-
-export async function dispatch(dispatchData: Dispatch, shouldPublishEvent = true) {
-	const { storeName, action, args = [] } = dispatchData;
-
-	if (!stores[storeName]) throw new Error(`Invalid store ${storeName}`);
-	if (!(action in stores[storeName]))
-		throw new Error(`Invalid action ${action} of store ${storeName}`);
-
-	//@ts-ignore
-	stores[storeName][action]();
-
-	if (shouldPublishEvent) {
-		await fetch('/events', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ ...dispatchData, socketId })
-		});
-	}
-}
-
-// Taken from https://stackoverflow.com/a/53758827
-function shuffle(array: Array<any>, seed: number) {
-	// <-- ADDED ARGUMENT
-	var m = array.length,
-		t,
-		i;
-
-	// While there remain elements to shuffle…
-	while (m) {
-		// Pick a remaining element…
-		i = Math.floor(random(seed) * m--); // <-- MODIFIED LINE
-
-		// And swap it with the current element.
-		t = array[m];
-		array[m] = array[i];
-		array[i] = t;
-		++seed; // <-- ADDED LINE
-	}
-
-	return array;
-}
-
-function random(seed: number) {
-	var x = Math.sin(seed++) * 10000;
-	return x - Math.floor(x);
-}

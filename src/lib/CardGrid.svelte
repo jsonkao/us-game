@@ -3,7 +3,7 @@
 	import { cardStore } from '$lib/stores';
 
 	import { flip } from 'svelte/animate';
-	import { send, receive } from './transition.js';
+	import { send, receive } from '$lib/utils';
 
 	let levels = [2, 1, 0];
 

@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { chipColors } from '$lib/colors.js';
-	import { tokenStore, playerStore, dispatch } from '$lib/stores';
+	import { tokenStore, playerStore } from '$lib/stores';
+	import { dispatch } from '$lib/utils';
 	import { flip } from 'svelte/animate';
-	import { send, receive } from '$lib/transition.js';
+	import { send, receive } from '$lib/utils';
 	import type { Owner } from './types';
 
 	export let owner: Owner;

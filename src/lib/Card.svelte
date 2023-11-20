@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { chipColors, chipTextColors } from '$lib/colors.js';
-	import { playerStore, dispatch } from '$lib/stores';
+	import { playerStore } from '$lib/stores';
+	import { dispatch } from '$lib/utils';
 	import type { Card, Noble } from '$lib/types';
 
 	export let card: Card | Noble;
