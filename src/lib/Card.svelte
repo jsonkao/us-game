@@ -1,8 +1,9 @@
-<script>
+<script lang="ts">
 	import { chipColors, chipTextColors } from '$lib/colors.js';
-	import { playerStore, dispatch } from '$lib/stores.js';
+	import { playerStore, dispatch } from '$lib/stores';
+	import type { Card, Noble } from '$lib/types';
 
-	export let card = {};
+	export let card: Card | Noble;
 	export let isNoble = false;
 
 	let { costs, score, index, discount, image } = card;

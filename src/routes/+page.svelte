@@ -1,11 +1,12 @@
-<script>
+<script lang="ts">
+	import type { PageData } from './$types';
 	import CardGrid from '$lib/CardGrid.svelte';
 	import Card from '$lib/Card.svelte';
 	import PlayerHand from '$lib/PlayerHand.svelte';
 	import Tokens from '$lib/Tokens.svelte';
-	import { playerStore, nobleStore, cardStore, dispatch } from '$lib/stores';
+	import { playerStore, nobleStore, cardStore, dispatch } from '$lib/stores.js';
 
-	export let data;
+	export let data: PageData;
 	let { seed } = data;
 	nobleStore.shuffle(seed);
 	cardStore.shuffle(seed);
@@ -16,7 +17,7 @@
 	<div class="switch-turn" class:left={$playerStore === 0}>
 		<p>
 			Player {$playerStore + 1}&#8217;s turn.
-			<button on:click={() => dispatch({ storeName: 'playerStore', action: 'switchTurn' })}>
+			<button on:click={() => dispatch({ storeName: 'playerStore', action: 'switchTurn', args: [] })}>
 				Switch.
 			</button>
 		</p>

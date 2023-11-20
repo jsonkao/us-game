@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
 	import { chipColors } from '$lib/colors.js';
-	import { tokenStore, playerStore, dispatch } from '$lib/stores.js';
+	import { tokenStore, playerStore, dispatch } from '$lib/stores';
 	import { flip } from 'svelte/animate';
 	import { send, receive } from '$lib/transition.js';
+	import type { Owner } from './types';
 
-	export let owner;
+	export let owner: Owner;
 
 	$: tokens = $tokenStore.filter((token) => token.owner === owner);
 </script>

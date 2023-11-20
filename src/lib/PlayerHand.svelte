@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
 	import Card from '$lib/Card.svelte';
 	import Tokens from '$lib/Tokens.svelte';
-	import { cardStore, nobleStore } from '$lib/stores.js';
+	import { cardStore, nobleStore } from '$lib/stores';
 
 	import { flip } from 'svelte/animate';
 	import { send, receive } from '$lib/transition.js';

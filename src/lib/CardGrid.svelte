@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
 	import Card from '$lib/Card.svelte';
-	import { cardStore } from '$lib/stores.js';
+	import { cardStore } from '$lib/stores';
 
 	import { flip } from 'svelte/animate';
 	import { send, receive } from './transition.js';
