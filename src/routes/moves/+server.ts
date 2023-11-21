@@ -1,5 +1,6 @@
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import supabase from '$lib/server/database';
+import { dev } from '$app/environment';
 
 interface DispatchRequest extends Dispatch {
 	seed: number;
@@ -35,7 +36,8 @@ export const DELETE: RequestHandler = async () => {
 		// Send a message once the client is subscribed
 		channel.send({
 			type: 'broadcast',
-			event: 'restart'
+			event: 'restart',
+			payload: { dev }
 		});
 	});
 

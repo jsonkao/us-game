@@ -1,5 +1,6 @@
 import { dispatch } from '$lib/dispatch';
 import supabase from '$lib/client-database';
+import { dev } from '$app/environment';
 
 export function beginSocket() {
 	const channel = supabase.channel('moves');
@@ -7,7 +8,11 @@ export function beginSocket() {
 	// Listen to inserts
 	channel
 		.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'moves' }, handleInsert)
-		.on('broadcast', { event: 'restart' }, () => window.location.reload())
+		.on(
+			'broadcast',
+			{ event: 'restart' },
+			(payload) => payload.dev === dev && window.location.reload()
+		)
 		.subscribe();
 
 	function handleInsert(payload) {
