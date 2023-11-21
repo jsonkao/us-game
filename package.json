@@ -10,7 +10,8 @@
 		"format": "prettier --write .",
 		"deploy": "pnpm build && gh-pages -d build",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"images": "(cd ./src/lib/images/nobles && ./make-images.sh)"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-vercel": "^3.1.0",

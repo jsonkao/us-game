@@ -2,7 +2,7 @@ import { writable, get } from 'svelte/store';
 import { cards, nobles } from '$lib/constants.json';
 import { shuffle, seed } from '$lib/utils';
 
-const nobleImages: Record<string, () => Promise<any>> = import.meta.glob('$lib/images/nobles/*');
+const nobleImages: Record<string, () => Promise<any>> = import.meta.glob('$lib/images/nobles/final/*');
 
 async function createNobleStore() {
 	const initialNobles: Array<Noble> = await Promise.all(
