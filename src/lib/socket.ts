@@ -16,7 +16,6 @@ export function beginSocket() {
 		.on('broadcast', { event: 'restart' }, () => window.location.reload())
 		.subscribe();
 
-	// Create a function to handle inserts
 	function handleInsert(payload) {
 		const move: Move = payload.new;
 
