@@ -39,7 +39,7 @@
 <style>
 	.cards-container {
 		display: flex;
-		margin: 12px 0 16px;
+		margin-bottom: 16px;
 	}
 
 	.cards {
