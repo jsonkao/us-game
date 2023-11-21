@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit';
-import { getMoves } from '$lib/server/database';
+import { getMoves } from '$lib/client-database';
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ params }) {
+export async function load() {
 	const moves: Array<Move> = await getMoves();
 
 	if (moves) {
@@ -11,4 +11,3 @@ export async function load({ params }) {
 
 	throw error(404, 'Not found');
 }
-
