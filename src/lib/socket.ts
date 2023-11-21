@@ -8,11 +8,9 @@ export function beginSocket() {
 	// Listen to inserts
 	channel
 		.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'moves' }, handleInsert)
-		.on(
-			'broadcast',
-			{ event: 'restart' },
-			(payload) => payload.dev === dev && window.location.reload()
-		)
+		.on('broadcast', { event: 'restart' }, ({ payload }) => {
+			payload.dev === dev && window.location.reload();
+		})
 		.subscribe();
 
 	function handleInsert(payload) {
