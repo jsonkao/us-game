@@ -9,6 +9,7 @@ export function beginSocket() {
 	channel
 		.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'moves' }, handleInsert)
 		.on('broadcast', { event: 'restart' }, ({ payload }) => {
+			console.log(payload, dev)
 			payload.dev === dev && window.location.reload();
 		})
 		.subscribe();
