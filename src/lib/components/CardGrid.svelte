@@ -3,8 +3,8 @@
 	import { browser } from '$app/environment';
 
 	import { cardStore } from '$lib/stores';
-	import { send, receive } from '$lib/utils';
-	import Card from '$lib/Card.svelte';
+	import { send, receive } from '$lib/utils/helpers';
+	import Card from '$lib/components/Card.svelte';
 
 	let levels = [2, 1, 0];
 

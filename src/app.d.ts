@@ -39,6 +39,7 @@ declare global {
 
 	interface Move extends Dispatch {
 		id: number;
+		seed: number;
 	}
 }
 

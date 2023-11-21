@@ -13,11 +13,12 @@ export async function getMoves(): Promise<Move[]> {
 		throw error;
 	}
 
-	const moves: Array<Move> = (data || []).map(({ storeName, action, args, id }) => ({
+	const moves: Array<Move> = (data || []).map(({ storeName, action, args, id, seed }) => ({
 		storeName,
 		action,
 		args: JSON.parse(args),
-		id
+		id,
+		seed
 	}));
 
 	return moves;

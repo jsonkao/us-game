@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { chipColors } from '$lib/colors.js';
 	import { tokenStore, playerStore } from '$lib/stores';
-	import { dispatch } from '$lib/dispatch';
+	import { dispatch } from '$lib/utils/dispatch';
 	import { flip } from 'svelte/animate';
-	import { send, receive } from '$lib/utils';
+	import { send, receive } from '$lib/utils/helpers';
 
 	export let owner: Owner;
 
@@ -61,6 +61,7 @@
 
 	button {
 		all: unset;
+		touch-action: manipulation;
 		width: var(--token-size);
 		height: var(--token-size);
 		background: var(--bg-color);

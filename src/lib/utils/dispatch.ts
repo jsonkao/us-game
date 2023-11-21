@@ -1,5 +1,5 @@
 import * as stores from '$lib/stores';
-import { seed } from '$lib/utils';
+import { seed } from '$lib/utils/helpers';
 
 export async function dispatch(dispatchData: Dispatch, shouldPublishEvent = true) {
 	const { storeName, action, args = [] } = dispatchData;

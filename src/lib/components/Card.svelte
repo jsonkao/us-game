@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { chipColors, chipTextColors } from '$lib/colors.js';
 	import { playerStore } from '$lib/stores';
-	import { dispatch } from '$lib/dispatch';
+	import { dispatch } from '$lib/utils/dispatch';
 
 	export let card: Card | Noble;
 	export let isNoble = false;

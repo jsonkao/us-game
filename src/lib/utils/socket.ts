@@ -1,4 +1,4 @@
-import { dispatch } from '$lib/dispatch';
+import { dispatch } from '$lib/utils/dispatch';
 import supabase from '$lib/client-database';
 import { dev } from '$app/environment';
 
@@ -8,10 +8,7 @@ export function beginSocket() {
 	// Listen to inserts
 	channel
 		.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'moves' }, handleInsert)
-		.on('broadcast', { event: 'restart' }, ({ payload }) => {
-			console.log(payload, dev)
-			payload.dev === dev && window.location.reload();
-		})
+		.on('broadcast', { event: 'restart' }, () => window.location.reload())
 		.subscribe();
 
 	function handleInsert(payload) {

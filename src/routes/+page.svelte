@@ -1,22 +1,22 @@
 <script lang="ts">
 	import { playerStore, nobleStore } from '$lib/stores';
-	import { dispatch } from '$lib/dispatch';
-	import { restartGame } from '$lib/utils';
+	import { dispatch } from '$lib/utils/dispatch.js';
+	import { restartGame } from '$lib/utils/helpers.js';
 	import { moveStore } from '$lib/stores';
 	import { browser } from '$app/environment';
-	import { beginSocket } from '$lib/socket';
+	import { beginSocket } from '$lib/utils/socket.js';
 
-	import CardGrid from '$lib/CardGrid.svelte';
-	import Card from '$lib/Card.svelte';
-	import PlayerHand from '$lib/PlayerHand.svelte';
-	import Tokens from '$lib/Tokens.svelte';
+	import CardGrid from '$lib/components/CardGrid.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import PlayerHand from '$lib/components/PlayerHand.svelte';
+	import Tokens from '$lib/components/Tokens.svelte';
 	import { onMount } from 'svelte';
 
 	export let data;
 
 	onMount(() => {
 		data.moves.forEach((m) => dispatch(m, false));
-		moveStore.set(data.moves);
+		moveStore.populate(data.moves);
 		beginSocket();
 	});
 </script>

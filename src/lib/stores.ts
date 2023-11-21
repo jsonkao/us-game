@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store';
-import { cards, nobles } from '$lib/constants.json';
-import { shuffle, seed } from '$lib/utils';
+import { cards, nobles } from '$lib/initials.json';
+import { shuffle, seed } from '$lib/utils/helpers';
 
 const nobleImages: Record<string, () => Promise<any>> = import.meta.glob('$lib/images/nobles/final/*');
 
@@ -144,7 +144,7 @@ export function createMoveStore(initialValue: Array<Move> = []) {
 
 	return {
 		subscribe,
-		set,
+		populate: (moves: Array<Move>) => set(moves.filter(m => m.seed === seed)),
 		addMove: (move: Move) => update((moves) => [...moves, move])
 	};
 }

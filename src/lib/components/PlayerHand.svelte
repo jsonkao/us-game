@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Card from '$lib/Card.svelte';
-	import Tokens from '$lib/Tokens.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Tokens from '$lib/components/Tokens.svelte';
 	import { cardStore, nobleStore } from '$lib/stores';
 
 	import { flip } from 'svelte/animate';
-	import { send, receive } from '$lib/utils';
+	import { send, receive } from '$lib/utils/helpers';
 
 	export let player = 0;
 
