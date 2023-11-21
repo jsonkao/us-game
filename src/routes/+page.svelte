@@ -1,11 +1,24 @@
 <script lang="ts">
+	import { playerStore, nobleStore } from '$lib/stores';
+	import { dispatch } from '$lib/dispatch';
+	import { restartGame } from '$lib/utils';
+	import { moveStore } from '$lib/stores';
+	import { browser } from '$app/environment';
+	import { beginSocket } from '$lib/socket';
+
 	import CardGrid from '$lib/CardGrid.svelte';
 	import Card from '$lib/Card.svelte';
 	import PlayerHand from '$lib/PlayerHand.svelte';
 	import Tokens from '$lib/Tokens.svelte';
-	import { playerStore, nobleStore } from '$lib/stores';
-	import { dispatch } from '$lib/utils';
-	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
+
+	export let data;
+
+	onMount(() => {
+		data.moves.forEach((m) => dispatch(m, false));
+		moveStore.set(data.moves);
+		beginSocket();
+	});
 </script>
 
 <div class="container">
@@ -14,7 +27,7 @@
 		<p>
 			Player {$playerStore + 1}&#8217;s turn.
 			<button
-				on:click={() => dispatch({ storeName: 'playerStore', action: 'switchTurn', args: [] })}
+				on:click={() => dispatch({ storeName: 'playerStore', action: 'nextTurn', args: [$playerStore] })}
 			>
 				Switch.
 			</button>
@@ -34,6 +47,8 @@
 			{/each}
 		</div>
 	</div>
+
+	<div class="restart-game"><button on:click={restartGame}>Restart.</button></div>
 </div>
 
 <style>
@@ -67,11 +82,6 @@
 		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 		transition-duration: 0.2s;
 		pointer-events: all;
-	}
-
-	.switch-turn button:hover {
-		border-bottom: 1px solid rgba(0, 0, 0, 0.6);
-		cursor: pointer;
 	}
 
 	.switch-turn p {
@@ -112,12 +122,32 @@
 		gap: 8px;
 		grid-column: 1 / -1;
 		margin-top: 50px;
-		transition-duration: .2s;
+		transition-duration: 0.2s;
 	}
 
 	.nobles div {
 		display: flex;
 		column-gap: 4px;
+	}
+
+	.restart-game {
+		margin-top: 30px;
+		grid-column: 1 / -1;
+		text-align: center;
+	}
+
+	.restart-game button {
+		all: unset;
+		text-align: center;
+		font-size: inherit;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+		transition-duration: 0.2s;
+		pointer-events: all;
+	}
+
+	button:hover {
+		border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+		cursor: pointer;
 	}
 
 	@media (max-width: 960px) {

@@ -1,59 +1,12 @@
 import { crossfade } from 'svelte/transition';
 import { quintOut } from 'svelte/easing';
-import { browser, dev } from '$app/environment';
-import Pusher, { Channel } from 'pusher-js';
-import * as stores from '$lib/stores';
+import { browser } from '$app/environment';
 
 /* Seed */
 
 export const seed = browser
 	? parseInt(new URLSearchParams(window.location.search).get('seed') || '1')
 	: 1;
-
-/* Web socket */
-
-let pusher: Pusher;
-let socketId: string;
-
-if (browser) {
-	try {
-		Pusher.logToConsole = dev || true;
-
-		pusher = new Pusher('cc106f833f29464ac282', {
-			cluster: 'mt1'
-		});
-
-		const channel: Channel = pusher.subscribe(`us-game-${seed}-${dev ? 'dev' : 'prod'}`);
-		channel.bind('event', function (data: Dispatch) {
-			dispatch(data, false);
-		});
-
-		pusher.connection.bind('connected', () => {
-			socketId = pusher.connection.socket_id;
-		});
-	} catch (e) {
-		console.error('Pusher error', e);
-	}
-}
-
-export async function dispatch(dispatchData: Dispatch, shouldPublishEvent = true) {
-	const { storeName, action, args = [] } = dispatchData;
-
-	if (!stores[storeName]) throw new Error(`Invalid store ${storeName}`);
-	if (!(action in stores[storeName]))
-		throw new Error(`Invalid action ${action} of store ${storeName}`);
-
-	//@ts-ignore
-	stores[storeName][action](...args);
-
-	if (shouldPublishEvent) {
-		await fetch('/events', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ ...dispatchData, socketId })
-		});
-	}
-}
 
 /* Crossfade function for Svelte animation */
 
@@ -101,4 +54,12 @@ export function shuffle<Type>(array: Array<Type>, seed: number): Array<Type> {
 function random(seed: number) {
 	var x = Math.sin(seed++) * 10000;
 	return x - Math.floor(x);
+}
+
+/* Restart game */
+
+export async function restartGame() {
+	await fetch('/moves', {
+		method: 'DELETE'
+	});
 }

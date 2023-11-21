@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { chipColors } from '$lib/colors.js';
 	import { tokenStore, playerStore } from '$lib/stores';
-	import { dispatch } from '$lib/utils';
+	import { dispatch } from '$lib/dispatch';
 	import { flip } from 'svelte/animate';
 	import { send, receive } from '$lib/utils';
 

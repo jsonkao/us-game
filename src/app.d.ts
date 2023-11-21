@@ -1,5 +1,3 @@
-// See https://kit.svelte.dev/docs/types#app
-// for information about these interfaces
 declare global {
 	namespace App {
 		// interface Locals {}
@@ -38,6 +36,10 @@ declare global {
 		action: string;
 		args: Array<any>;
 	};
+
+	interface Move extends Dispatch {
+		id: number;
+	}
 }
 
 export {};

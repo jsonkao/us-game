@@ -95,7 +95,7 @@ function createCurrentPlayerStore(numPlayers = 2) {
 
 	return {
 		subscribe,
-		switchTurn: () => update((n) => (n + 1) % numPlayers)
+		nextTurn: (currentPlayer: number) => update(() => (currentPlayer + 1) % numPlayers)
 	};
 }
 
@@ -135,3 +135,18 @@ function createCardStore() {
 }
 
 export const cardStore = createCardStore();
+
+// Write a function that creates a moves store called createMoveStore that takes an initial value and returns a store with the following methods:
+// - addMove: takes a move and adds it to the moves store
+// - clearMoves: clears all moves from the moves store
+export function createMoveStore(initialValue: Array<Move> = []) {
+	const { subscribe, update, set } = writable(initialValue);
+
+	return {
+		subscribe,
+		set,
+		addMove: (move: Move) => update((moves) => [...moves, move])
+	};
+}
+
+export const moveStore = createMoveStore();
