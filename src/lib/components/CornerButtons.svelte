@@ -85,7 +85,7 @@
 	.animate {
 		--bounce-height: -120px;
 		display: block;
-		animation: bounce 0.3s 2 alternate;
+		animation: bounce 0.35s infinite alternate;
 	}
 
 	.animate span {
