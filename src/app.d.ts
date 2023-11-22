@@ -45,6 +45,8 @@ declare global {
 	interface Chat {
 		id: number;
 		emoji: string;
+		player: Owner;
+		transform: string;
 	}
 }
 

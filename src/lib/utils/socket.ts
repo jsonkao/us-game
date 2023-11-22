@@ -10,7 +10,7 @@ export function beginSocket() {
 	channel
 		.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'moves' }, handleInsert)
 		.on('broadcast', { event: 'restart' }, () => window.location.reload())
-		.on('broadcast', { event: 'chat' }, ({ payload: { emoji, player } }) =>
+		.on('broadcast', { event: 'emoji' }, ({ payload: { emoji, player } }) =>
 			chatStore.add(emoji, player)
 		)
 		.subscribe();
@@ -21,11 +21,11 @@ export function beginSocket() {
 	}
 }
 
-export function broadcastEmoji({ emoji, player }) {
+export function broadcastEmoji(emoji: string, player: number) {
 	chatStore.add(emoji, player);
 	channel.send({
 		type: 'broadcast',
-		event: 'chat',
+		event: 'emoji',
 		payload: { emoji, player }
 	});
 }

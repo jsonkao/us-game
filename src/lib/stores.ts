@@ -154,7 +154,8 @@ export function createMoveStore(initialValue: Array<Move> = []) {
 export const moveStore = createMoveStore();
 
 export function createChatStore() {
-	const { subscribe, update } = writable([]);
+	const initialValue: Array<Chat> = [];
+	const { subscribe, update } = writable(initialValue);
 
 	let id = 0;
 

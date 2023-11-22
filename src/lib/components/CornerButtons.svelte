@@ -33,7 +33,7 @@
 		{#each [0, 1] as player}
 			<div class="emojis">
 				{#each emojis as emoji}
-					<button on:click={() => broadcastEmoji({ emoji, player })}>
+					<button on:click={() => broadcastEmoji(emoji, player)}>
 						{@html emoji}
 					</button>
 				{/each}
@@ -85,10 +85,10 @@
 
 	@keyframes bounce {
 		from {
-			transform: translateY(50px);
+			transform: translateY(50px) rotate(-20deg);
 		}
 		to {
-			transform: translateY(-50px);
+			transform: translateY(-50px) rotate(20deg);
 		}
 	}
 
