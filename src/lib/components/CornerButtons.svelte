@@ -64,7 +64,8 @@
 	.emojis-container {
 		display: flex;
 		justify-content: space-between;
-		padding-top: 12px;
+		padding-top: 16px;
+    pointer-events: none;
 	}
 
 	.emoji-chats {
@@ -123,6 +124,7 @@
 		margin-right: 3px;
 		font-size: 20px;
 		padding: 0;
+    pointer-events: all;
 	}
 
 	.emojis {
