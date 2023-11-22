@@ -49,6 +49,8 @@
 		font-family: 'Roboto', sans-serif;
 		margin: 0;
 		background-color: var(--bg-color);
+
+		touch-action: manipulation;
 	}
 
 	:global(p) {

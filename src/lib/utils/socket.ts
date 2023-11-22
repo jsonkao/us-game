@@ -12,7 +12,7 @@ export function beginSocket() {
 		.on('broadcast', { event: 'restart' }, () => window.location.reload())
 		.on('broadcast', { event: 'chat' }, ({ payload: { emoji, player} }) => {
 			const id = chatStore.add(emoji, player);
-			setTimeout(() => chatStore.remove(id), CHAT_FLY_DURATION);
+			// setTimeout(() => chatStore.remove(id), CHAT_FLY_DURATION);
 		})
 		.subscribe();
 

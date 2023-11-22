@@ -61,7 +61,6 @@
 
 	button {
 		all: unset;
-		touch-action: manipulation;
 		width: var(--token-size);
 		height: var(--token-size);
 		background: var(--bg-color);

@@ -11,6 +11,8 @@
 		})
 	);
 
+	let switchTurnWidth = 200;
+
 	async function sendEmoji(emoji: string, player: number) {
 		await fetch('/chat', {
 			method: 'POST',
@@ -20,11 +22,15 @@
 	}
 
 	$: console.log($chatStore);
+
+	function remove(node, id) {
+		setTimeout(() => chatStore.remove(id), CHAT_FLY_DURATION);
+	}
 </script>
 
 <div class="corner" class:left={$playerStore === 0}>
 	<div class="switch-turn">
-		<p>
+		<p bind:clientWidth={switchTurnWidth} style="--width: {switchTurnWidth}px">
 			<span>Player {$playerStore + 1}&#8217;s turn.</span>
 			<button
 				on:click={() =>
@@ -48,11 +54,18 @@
 	</div>
 
 	<div class="emoji-chats">
-		{#each $chatStore as { emoji, player }}
+		{#each $chatStore as { emoji, player, id } (id)}
 			<div
 				class:left={player === 0}
-				in:fly={{ x: (player ? '' : '-') + '100vw', duration: CHAT_FLY_DURATION }}
+				in:fly={{
+					x: (player ? '' : '-') + '100vw',
+					y: Math.random() * 40,
+					duration: CHAT_FLY_DURATION
+				}}
 				out:fade={{ duration: 2000 }}
+				on:introend={() => chatStore.remove(id)}
+				style="transform: translate({Math.random() * 120 * (player ? 1 : -1)}px, {Math.random() *
+					160}px)"
 			>
 				{emoji}
 			</div>
@@ -64,14 +77,13 @@
 	.emojis-container {
 		display: flex;
 		justify-content: space-between;
-		padding-top: 16px;
-    pointer-events: none;
+		pointer-events: none;
 	}
 
 	.emoji-chats {
 		pointer-events: none;
 		position: relative;
-    z-index: 100;
+		z-index: 100;
 	}
 
 	.emoji-chats div {
@@ -91,6 +103,7 @@
 		grid-column: 1 / -1;
 		grid-row: 1;
 		position: relative;
+		pointer-events: none;
 	}
 
 	.switch-turn button {
@@ -102,29 +115,30 @@
 	}
 
 	.switch-turn {
-		position: absolute;
-		left: 0;
-		transition-duration: 0.3s;
+		position: relative;
 	}
 
 	.switch-turn p {
+		position: relative;
+		left: 0;
+		transition-duration: 0.3s;
 		white-space: pre;
-		display: flex;
+		display: inline-flex;
 		align-items: start;
 		gap: 3px;
 	}
 
-	.corner:not(.left) .switch-turn {
+	.corner:not(.left) .switch-turn p {
 		left: 100%;
-		transform: translateX(-100%);
+		transform: translateX(calc(-1 * var(--width)));
 	}
 
 	.emojis button {
 		border: none;
 		margin-right: 3px;
-		font-size: 20px;
+		font-size: 30px;
 		padding: 0;
-    pointer-events: all;
+		pointer-events: all;
 	}
 
 	.emojis {
