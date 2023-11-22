@@ -2,7 +2,9 @@ import { writable, get } from 'svelte/store';
 import { cards, nobles } from '$lib/initials.json';
 import { shuffle, seed } from '$lib/utils/helpers';
 
-const nobleImages: Record<string, () => Promise<any>> = import.meta.glob('$lib/images/nobles/final/*');
+const nobleImages: Record<string, () => Promise<any>> = import.meta.glob(
+	'$lib/images/nobles/final/*'
+);
 
 async function createNobleStore() {
 	const initialNobles: Array<Noble> = await Promise.all(
@@ -144,9 +146,28 @@ export function createMoveStore(initialValue: Array<Move> = []) {
 
 	return {
 		subscribe,
-		populate: (moves: Array<Move>) => set(moves.filter(m => m.seed === seed)),
+		populate: (moves: Array<Move>) => set(moves.filter((m) => m.seed === seed)),
 		addMove: (move: Move) => update((moves) => [...moves, move])
 	};
 }
 
 export const moveStore = createMoveStore();
+
+export function createChatStore() {
+	const { subscribe, update } = writable([]);
+
+	let id = 0;
+
+	return {
+		subscribe,
+		add: (emoji: string, player: number) => {
+			update((chats: Array<Chat>) => [...chats, { emoji, player, id: id++ }])
+			return id - 1;
+		},
+		remove: (id: number) => update((chats: Array<Chat>) => chats.filter((c) => c.id !== id))
+	};
+}
+
+export const chatStore = createChatStore();
+
+// Write a function that creates a store called chatStore

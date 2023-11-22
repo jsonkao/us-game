@@ -10,6 +10,7 @@ export async function getMoves(): Promise<Move[]> {
 	let { data, error } = await supabase.from('moves').select('*');
 
 	if (error) {
+		return [];
 		throw error;
 	}
 

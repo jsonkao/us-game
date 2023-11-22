@@ -32,9 +32,9 @@
 
 <style>
 	.card-grid {
-		width: calc(5 * var(--card-width) + 4 * var(--card-grid-gap));
 		display: grid;
 		grid-template-columns: repeat(5, var(--card-width));
+		grid-template-rows: repeat(3, var(--card-height));
 		gap: var(--card-grid-gap);
 		transition-duration: .2s;
 	}

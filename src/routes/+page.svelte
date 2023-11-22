@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { playerStore, nobleStore } from '$lib/stores';
+	import { nobleStore } from '$lib/stores';
 	import { dispatch } from '$lib/utils/dispatch.js';
 	import { restartGame } from '$lib/utils/helpers.js';
 	import { moveStore } from '$lib/stores';
@@ -10,6 +10,7 @@
 	import Card from '$lib/components/Card.svelte';
 	import PlayerHand from '$lib/components/PlayerHand.svelte';
 	import Tokens from '$lib/components/Tokens.svelte';
+	import CornerButtons from '$lib/components/CornerButtons.svelte';
 	import { onMount } from 'svelte';
 
 	export let data;
@@ -23,16 +24,7 @@
 
 <div class="container">
 	<Tokens owner="bank" />
-	<div class="switch-turn" class:left={$playerStore === 0}>
-		<p>
-			Player {$playerStore + 1}&#8217;s turn.
-			<button
-				on:click={() => dispatch({ storeName: 'playerStore', action: 'nextTurn', args: [$playerStore] })}
-			>
-				Switch.
-			</button>
-		</p>
-	</div>
+	<CornerButtons />
 
 	<PlayerHand player={0} />
 	<CardGrid />
@@ -66,37 +58,6 @@
 
 	:global(button:hover) {
 		cursor: pointer;
-	}
-
-	.switch-turn {
-		text-align: center;
-		grid-column: 1 / -1;
-		grid-row: 1;
-		position: relative;
-		pointer-events: none;
-	}
-
-	.switch-turn button {
-		all: unset;
-		font-size: inherit;
-		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-		transition-duration: 0.2s;
-		pointer-events: all;
-	}
-
-	.switch-turn p {
-		position: absolute;
-		left: 0;
-		transition-duration: 0.3s;
-		white-space: pre;
-		display: flex;
-		align-items: start;
-		gap: 4px;
-	}
-
-	.switch-turn:not(.left) p {
-		left: 100%;
-		transform: translateX(-100%);
 	}
 
 	.container {

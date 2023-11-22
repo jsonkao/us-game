@@ -41,6 +41,11 @@ declare global {
 		id: number;
 		seed: number;
 	}
+
+	interface Chat {
+		id: number;
+		emoji: string;
+	}
 }
 
 export {};
