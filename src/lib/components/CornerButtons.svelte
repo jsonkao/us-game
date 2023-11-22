@@ -42,7 +42,7 @@
 	</div>
 
 	<div class="emoji-chats">
-		{#each $chatStore as { emoji, player, id, transform } (id)}
+		{#each $chatStore as { emoji, player, id, style } (id)}
 			<div
 				class:left={player === 0}
 				in:fly={{
@@ -51,9 +51,13 @@
 				}}
 				out:fade={{ duration: 2000 }}
 				on:introend={() => chatStore.remove(id)}
-				style="transform: {transform}"
+				{style}
 			>
-				<span>{emoji}</span>
+				<span class="animate">
+					<span>
+						{emoji}
+					</span>
+				</span>
 			</div>
 		{/each}
 	</div>
@@ -78,17 +82,23 @@
 		font-size: 80px;
 	}
 
-	.emoji-chats div span {
+	.animate {
+		--bounce-height: -120px;
 		display: block;
-		animation: bounce 0.3s infinite alternate;
+		animation: bounce 0.3s 2 alternate;
+	}
+
+	.animate span {
+		display: block;
+		transform: rotate(var(--rotate))
 	}
 
 	@keyframes bounce {
 		from {
-			transform: translateY(50px) rotate(-20deg);
+			transform: translateY(0px) rotate(0deg);
 		}
 		to {
-			transform: translateY(-50px) rotate(20deg);
+			transform: translateY(var(--bounce-height)) rotate(60deg);
 		}
 	}
 

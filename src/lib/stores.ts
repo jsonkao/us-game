@@ -41,9 +41,9 @@ export const nobleStore = await createNobleStore();
 function createTokenStore() {
 	const initialTokens: Array<Token> = [];
 	let index = 0;
-	for (let c = 0; c < 5; c++)
+	for (let color = 0; color < 5; color++)
 		for (let i = 0; i < 4; i++)
-			initialTokens.push({ color: c, owner: 'bank', index: index++, lastModified: 0 });
+			initialTokens.push({ color, owner: 'bank', index: index++, lastModified: 0 });
 
 	const { subscribe, update } = writable(initialTokens);
 
@@ -162,15 +162,18 @@ export function createChatStore() {
 	return {
 		subscribe,
 		add: (emoji: string, player: number) => {
+			const height = window.innerHeight;
 			update((chats: Array<Chat>) => [
 				...chats,
 				{
 					emoji,
 					player,
 					id: id++,
-					transform: `translate(${Math.random() * 200 * (player ? 1 : -1)}%, ${
-						Math.random() * 200
-					}%)`
+					style: `transform: translate(${Math.random() * 200 * (player ? 1 : -1)}%, ${
+						Math.random() * height * 0.6
+					}px); --rotate: ${(Math.random() - 0.5) * 60}deg; --bounce-height: ${
+						-(1 - Math.random() / 2) * height * 0.3
+					}`
 				}
 			]);
 			return id - 1;
@@ -180,5 +183,3 @@ export function createChatStore() {
 }
 
 export const chatStore = createChatStore();
-
-// Write a function that creates a store called chatStore

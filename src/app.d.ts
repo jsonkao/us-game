@@ -46,7 +46,7 @@ declare global {
 		id: number;
 		emoji: string;
 		player: Owner;
-		transform: string;
+		style: string;
 	}
 }
 
