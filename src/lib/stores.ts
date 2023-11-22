@@ -161,7 +161,17 @@ export function createChatStore() {
 	return {
 		subscribe,
 		add: (emoji: string, player: number) => {
-			update((chats: Array<Chat>) => [...chats, { emoji, player, id: id++ }])
+			update((chats: Array<Chat>) => [
+				...chats,
+				{
+					emoji,
+					player,
+					id: id++,
+					transform: `translate(${Math.random() * 200 * (player ? 1 : -1)}%, ${
+						Math.random() * 200
+					}%)`
+				}
+			]);
 			return id - 1;
 		},
 		remove: (id: number) => update((chats: Array<Chat>) => chats.filter((c) => c.id !== id))

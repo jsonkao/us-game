@@ -1,25 +1,31 @@
 import { dispatch } from '$lib/utils/dispatch';
+import { seed } from '$lib/utils/helpers';
 import { chatStore } from '$lib/stores';
-import { CHAT_FLY_DURATION } from '$lib/constants';
 import supabase from '$lib/client-database';
 
-export function beginSocket() {
-	const channel = supabase.channel('moves');
+const channel = supabase.channel('moves');
 
+export function beginSocket() {
 	// Listen to inserts
 	channel
 		.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'moves' }, handleInsert)
 		.on('broadcast', { event: 'restart' }, () => window.location.reload())
-		.on('broadcast', { event: 'chat' }, ({ payload: { emoji, player} }) => {
-			const id = chatStore.add(emoji, player);
-			// setTimeout(() => chatStore.remove(id), CHAT_FLY_DURATION);
-		})
+		.on('broadcast', { event: 'chat' }, ({ payload: { emoji, player } }) =>
+			chatStore.add(emoji, player)
+		)
 		.subscribe();
 
 	function handleInsert(payload) {
 		const move: Move = payload.new;
-
-		// Dispatches the move even if it's the same client that sent it, should be fine unless a crazy race condition happens
-		dispatch(move, false);
+		if (move.seed === seed) dispatch(move, false);
 	}
+}
+
+export function broadcastEmoji({ emoji, player }) {
+	chatStore.add(emoji, player);
+	channel.send({
+		type: 'broadcast',
+		event: 'chat',
+		payload: { emoji, player }
+	});
 }

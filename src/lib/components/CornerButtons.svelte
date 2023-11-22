@@ -1,31 +1,19 @@
 <script lang="ts">
 	import { playerStore } from '$lib/stores';
-	import { dispatch } from '$lib/utils/dispatch.js';
+	import { dispatch } from '$lib/utils/dispatch';
 	import { chatStore } from '$lib/stores';
 	import { fade, fly } from 'svelte/transition';
-	import { CHAT_FLY_DURATION } from '$lib/constants';
+	import { broadcastEmoji } from '$lib/utils/socket';
 
-	const emojis = ['🤬', '👹', '😌', '🐦', '😕', '😤'].map((text) =>
+	const CHAT_FLY_DURATION = 900;
+
+	const emojis = ['👹', '😌', '🙂', '🤬', '😟', '⌛️'].map((text) =>
 		text.replace(/[\u00A0-\u00FF]/g, function (c) {
 			return '&#' + c.charCodeAt(0) + ';';
 		})
 	);
 
 	let switchTurnWidth = 200;
-
-	async function sendEmoji(emoji: string, player: number) {
-		await fetch('/chat', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ emoji, player })
-		});
-	}
-
-	$: console.log($chatStore);
-
-	function remove(node, id) {
-		setTimeout(() => chatStore.remove(id), CHAT_FLY_DURATION);
-	}
 </script>
 
 <div class="corner" class:left={$playerStore === 0}>
@@ -45,7 +33,7 @@
 		{#each [0, 1] as player}
 			<div class="emojis">
 				{#each emojis as emoji}
-					<button on:click={() => sendEmoji(emoji, player)}>
+					<button on:click={() => broadcastEmoji({ emoji, player })}>
 						{@html emoji}
 					</button>
 				{/each}
@@ -54,20 +42,18 @@
 	</div>
 
 	<div class="emoji-chats">
-		{#each $chatStore as { emoji, player, id } (id)}
+		{#each $chatStore as { emoji, player, id, transform } (id)}
 			<div
 				class:left={player === 0}
 				in:fly={{
 					x: (player ? '' : '-') + '100vw',
-					y: Math.random() * 40,
 					duration: CHAT_FLY_DURATION
 				}}
 				out:fade={{ duration: 2000 }}
 				on:introend={() => chatStore.remove(id)}
-				style="transform: translate({Math.random() * 120 * (player ? 1 : -1)}px, {Math.random() *
-					160}px)"
+				style="transform: {transform}"
 			>
-				{emoji}
+				<span>{emoji}</span>
 			</div>
 		{/each}
 	</div>
@@ -84,11 +70,26 @@
 		pointer-events: none;
 		position: relative;
 		z-index: 100;
+		width: 100%;
 	}
 
 	.emoji-chats div {
 		position: absolute;
 		font-size: 80px;
+	}
+
+	.emoji-chats div span {
+		display: block;
+		animation: bounce 0.3s infinite alternate;
+	}
+
+	@keyframes bounce {
+		from {
+			transform: translateY(50px);
+		}
+		to {
+			transform: translateY(-50px);
+		}
 	}
 
 	.emoji-chats div.left {
@@ -134,22 +135,25 @@
 	}
 
 	.emojis button {
-		border: none;
-		margin-right: 3px;
+		all: unset;
 		font-size: 30px;
-		padding: 0;
 		pointer-events: all;
+		transition-duration: 0.2s;
 	}
 
 	.emojis {
 		margin-top: 3px;
+		display: flex;
+		gap: 3px;
 	}
 
 	button:hover {
 		cursor: pointer;
 	}
 
-	.emojis button:hover {
-		transform: scale(1.2);
+	@media (max-width: 960px) {
+		.emojis button {
+			font-size: 25px;
+		}
 	}
 </style>

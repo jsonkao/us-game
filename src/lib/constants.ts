@@ -1,1 +1,0 @@
-export const CHAT_FLY_DURATION = 900;

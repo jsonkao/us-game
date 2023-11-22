@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nobleStore } from '$lib/stores';
 	import { dispatch } from '$lib/utils/dispatch.js';
-	import { restartGame } from '$lib/utils/helpers.js';
+	import { restartGame, seed } from '$lib/utils/helpers.js';
 	import { moveStore } from '$lib/stores';
 	import { browser } from '$app/environment';
 	import { beginSocket } from '$lib/utils/socket.js';
@@ -16,7 +16,7 @@
 	export let data;
 
 	onMount(() => {
-		data.moves.forEach((m) => dispatch(m, false));
+		data.moves.filter((m) => m.seed === seed).forEach((m) => dispatch(m, false));
 		moveStore.populate(data.moves);
 		beginSocket();
 	});

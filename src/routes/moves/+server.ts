@@ -1,6 +1,5 @@
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import supabase from '$lib/server/database';
-import { dev } from '$app/environment';
 
 interface DispatchRequest extends Dispatch {
 	seed: number;
