@@ -1,11 +1,10 @@
 import { dispatch } from '$lib/utils/dispatch';
-import { seed } from '$lib/utils/helpers';
 import { chatStore } from '$lib/stores';
 import supabase from '$lib/client-database';
 
 const channel = supabase.channel('moves');
 
-export function beginSocket() {
+export function beginSocket(game: number) {
 	// Listen to inserts
 	channel
 		.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'moves' }, handleInsert)
@@ -17,7 +16,7 @@ export function beginSocket() {
 
 	function handleInsert(payload) {
 		const move: Move = payload.new;
-		if (move.seed === seed) dispatch(move, false);
+		if (move.game === game) dispatch(move, false);
 	}
 }
 

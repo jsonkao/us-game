@@ -2,7 +2,7 @@ declare global {
 	namespace App {
 		// interface Locals {}
 		interface PageData {
-			seed: number;
+			game: number;
 		}
 	}
 
@@ -39,7 +39,7 @@ declare global {
 
 	interface Move extends Dispatch {
 		id: number;
-		seed: number;
+		game: number;
 	}
 
 	interface Chat {

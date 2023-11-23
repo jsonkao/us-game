@@ -5,3 +5,8 @@ U's Game uses `pnpm`. After `pnpm install`, set up a `.env` file with two variab
 # Deployment
 
 U's Game is deployed on Vercel, which requires the same environment variables.
+
+# TODOs
+
+- Winning screen
+- Have player be a column in the moves table

@@ -1,12 +1,5 @@
 import { crossfade } from 'svelte/transition';
 import { quintOut } from 'svelte/easing';
-import { browser } from '$app/environment';
-
-/* Seed */
-
-export const seed = browser
-	? parseInt(new URLSearchParams(window.location.search).get('seed') || '1')
-	: 1;
 
 /* Crossfade function for Svelte animation */
 

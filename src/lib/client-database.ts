@@ -11,18 +11,27 @@ export async function getMoves(): Promise<Move[]> {
 
 	if (error) {
 		return [];
-		throw error;
 	}
 
-	const moves: Array<Move> = (data || []).map(({ storeName, action, args, id, seed }) => ({
+	const moves: Array<Move> = (data || []).map(({ storeName, action, args, id, game }) => ({
 		storeName,
 		action,
 		args: JSON.parse(args),
 		id,
-		seed
+		game
 	}));
 
 	return moves;
+}
+
+export async function getCurrentGame() {
+	let { data, error } = await supabase
+		.from('games')
+		.select('*')
+		.order('id', { ascending: false })
+		.limit(1);
+
+	if (!error && data.length > 0) return data[0].id;
 }
 
 export default supabase;

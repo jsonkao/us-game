@@ -2,16 +2,16 @@ import { json, error, type RequestHandler } from '@sveltejs/kit';
 import supabase from '$lib/server/database';
 
 interface DispatchRequest extends Dispatch {
-	seed: number;
+	game: number;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
 	const requestData: DispatchRequest = await request.json();
-	const { storeName, action, args = [], seed } = requestData;
+	const { storeName, action, args = [], game } = requestData;
 
 	const { error: pgError } = await supabase
 		.from('moves')
-		.insert({ storeName, action, args: JSON.stringify(args), seed })
+		.insert({ storeName, action, args: JSON.stringify(args), game })
 		.select();
 
 	if (pgError) {
@@ -22,7 +22,8 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 export const DELETE: RequestHandler = async () => {
-	const { error: pgError } = await supabase.from('moves').delete().gt('id', 0);
+	// Increment the game
+	const { error: pgError } = await supabase.from('games').insert([{}]);
 
 	const channel = supabase.channel('moves');
 	channel.subscribe((status) => {

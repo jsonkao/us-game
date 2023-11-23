@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { nobleStore } from '$lib/stores';
+	import { nobleStore, cardStore } from '$lib/stores';
 	import { dispatch } from '$lib/utils/dispatch.js';
-	import { restartGame, seed } from '$lib/utils/helpers.js';
+	import { restartGame } from '$lib/utils/helpers.js';
 	import { moveStore } from '$lib/stores';
 	import { browser } from '$app/environment';
 	import { beginSocket } from '$lib/utils/socket.js';
@@ -11,15 +11,21 @@
 	import PlayerHand from '$lib/components/PlayerHand.svelte';
 	import Tokens from '$lib/components/Tokens.svelte';
 	import CornerButtons from '$lib/components/CornerButtons.svelte';
-	import { onMount } from 'svelte';
+	import { setContext } from 'svelte';
 
 	export let data;
+	let { game } = data;
 
-	onMount(() => {
-		data.moves.filter((m) => m.seed === seed).forEach((m) => dispatch(m, false));
-		moveStore.populate(data.moves);
-		beginSocket();
-	});
+	setContext('game', game);
+
+	let moves = data.moves.filter((m) => m.game === game);
+	moves.forEach((m) => dispatch(m, false));
+	moveStore.set(moves);
+
+	if (browser) beginSocket(game);
+
+	nobleStore.init(game);
+	cardStore.init(game);
 </script>
 
 <div class="container">

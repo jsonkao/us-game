@@ -1,19 +1,23 @@
 import { writable, get } from 'svelte/store';
 import { cards, nobles } from '$lib/initials.json';
-import { shuffle, seed } from '$lib/utils/helpers';
+import { shuffle } from '$lib/utils/helpers';
 
 function createNobleStore() {
-	const shuffleAndSlice = (x: Array<any>) => shuffle(x, seed).slice(0, 3);
-	const imageKeys = shuffleAndSlice([0, 1, 2, 3]);
-	const initialNobles: Array<Noble> = shuffleAndSlice(nobles).map((n, i) => ({
-		...n,
-		owner: 'bank',
-		image: '/' + imageKeys[i] + '.webp'
-	}));
-	const { subscribe, update } = writable(initialNobles);
+	const initialNobles: Array<Noble> = [];
+	const { subscribe, update, set } = writable(initialNobles);
 
 	return {
 		subscribe,
+		init: (game: number) => {
+			const shuffleAndSlice = (x: Array<any>) => shuffle(x, game).slice(0, 3);
+			const imageKeys = shuffleAndSlice([0, 1, 2, 3]);
+			const initialNobles: Array<Noble> = shuffleAndSlice(nobles).map((n, i) => ({
+				...n,
+				owner: 'bank',
+				image: '/' + imageKeys[i] + '.webp'
+			}));
+			set(initialNobles);
+		},
 		checkForNobles: (player: Owner, cards: Array<Card>) => {
 			update((nobles) => {
 				// If player is eligible for a noble, assign that player to be the owner for those nobles
@@ -102,10 +106,11 @@ function createCardStore() {
 		...c,
 		owner: 'bank'
 	}));
-	const { subscribe, update } = writable(shuffle(initialCards, seed));
+	const { subscribe, update } = writable(initialCards);
 
 	return {
 		subscribe,
+		init: (game: number) => update((cards) => shuffle(cards, game)),
 		purchase: (buyer: Owner, cardIndex: number) => {
 			update(($cards) => {
 				const theCard = $cards.find((c) => c.index === cardIndex);
@@ -140,7 +145,7 @@ export function createMoveStore(initialValue: Array<Move> = []) {
 
 	return {
 		subscribe,
-		populate: (moves: Array<Move>) => set(moves.filter((m) => m.seed === seed)),
+		set,
 		addMove: (move: Move) => update((moves) => [...moves, move])
 	};
 }
