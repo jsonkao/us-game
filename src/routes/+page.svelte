@@ -51,6 +51,8 @@
 		background-color: var(--bg-color);
 
 		touch-action: manipulation;
+		width: 100%;
+		overflow-x: hidden;
 	}
 
 	:global(p) {

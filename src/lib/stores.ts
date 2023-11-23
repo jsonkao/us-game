@@ -2,21 +2,15 @@ import { writable, get } from 'svelte/store';
 import { cards, nobles } from '$lib/initials.json';
 import { shuffle, seed } from '$lib/utils/helpers';
 
-const nobleImages: Record<string, () => Promise<any>> = import.meta.glob(
-	'$lib/images/nobles/final/*'
-);
-
-async function createNobleStore() {
-	const initialNobles: Array<Noble> = await Promise.all(
-		nobles.map(async (n) => ({
-			...n,
-			owner: 'bank',
-			image: (
-				await nobleImages[Object.keys(nobleImages)[+n.index % Object.keys(nobleImages).length]]()
-			).default
-		}))
-	);
-	const { subscribe, update } = writable(shuffle(initialNobles, seed).slice(0, 3));
+function createNobleStore() {
+	const shuffleAndSlice = (x: Array<any>) => shuffle(x, seed).slice(0, 3);
+	const imageKeys = shuffleAndSlice([0, 1, 2, 3]);
+	const initialNobles: Array<Noble> = shuffleAndSlice(nobles).map((n, i) => ({
+		...n,
+		owner: 'bank',
+		image: '/' + imageKeys[i] + '.webp'
+	}));
+	const { subscribe, update } = writable(initialNobles);
 
 	return {
 		subscribe,
@@ -36,7 +30,7 @@ async function createNobleStore() {
 	};
 }
 
-export const nobleStore = await createNobleStore();
+export const nobleStore = createNobleStore();
 
 function createTokenStore() {
 	const initialTokens: Array<Token> = [];
@@ -52,7 +46,7 @@ function createTokenStore() {
 		take: (newOwner: Owner, index: number) => {
 			update((tokens) => {
 				tokens[index].owner = newOwner;
-				tokens[index].lastModified = Date.now();
+				// tokens[index].lastModified = Date.now();
 				return tokens;
 			});
 		},
