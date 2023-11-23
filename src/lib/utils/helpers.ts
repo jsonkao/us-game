@@ -48,11 +48,3 @@ function random(seed: number) {
 	var x = Math.sin(seed++) * 10000;
 	return x - Math.floor(x);
 }
-
-/* Restart game */
-
-export async function restartGame() {
-	await fetch('/moves', {
-		method: 'DELETE'
-	});
-}

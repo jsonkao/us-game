@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { playerStore } from '$lib/stores';
-	import { dispatch } from '$lib/utils/dispatch';
+	import { dispatchMove } from '$lib/utils/dispatch';
 	import { chatStore } from '$lib/stores';
 	import { fade, fly } from 'svelte/transition';
 	import { broadcastEmoji } from '$lib/utils/socket';
+	import { getContext } from 'svelte';
+
+	const game = getContext('game');
 
 	const CHAT_FLY_DURATION = 900;
 
@@ -22,7 +25,10 @@
 			<span>Player {$playerStore + 1}&#8217;s turn.</span>
 			<button
 				on:click={() =>
-					dispatch({ storeName: 'playerStore', action: 'nextTurn', args: [$playerStore] })}
+					dispatchMove(
+						{ storeName: 'playerStore', action: 'nextTurn', args: [$playerStore] },
+						game
+					)}
 			>
 				Switch.
 			</button>
@@ -90,7 +96,7 @@
 
 	.animate span {
 		display: block;
-		transform: rotate(var(--rotate))
+		transform: rotate(var(--rotate));
 	}
 
 	@keyframes bounce {

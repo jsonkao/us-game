@@ -21,11 +21,8 @@ export const POST: RequestHandler = async ({ request }) => {
 	return json({}, { status: 201 });
 };
 
-export const DELETE: RequestHandler = async () => {
-	// Increment the game
-	const { error: pgError } = await supabase.from('games').insert([{}]);
-
-	const channel = supabase.channel('moves');
+function broadcast(channelName: string) {
+	const channel = supabase.channel(channelName);
 	channel.subscribe((status) => {
 		// Wait for successful connection
 		if (status !== 'SUBSCRIBED') {
@@ -38,6 +35,25 @@ export const DELETE: RequestHandler = async () => {
 			event: 'restart'
 		});
 	});
+}
+
+export const PATCH: RequestHandler = async () => {
+	// Increment the game
+	const { error: pgError } = await supabase.from('games').insert([{}]);
+	broadcast('startNewGame');
+
+	if (pgError) {
+		console.error(pgError);
+		throw error(500, pgError);
+	}
+
+	return json({}, { status: 200 });
+};
+
+export const DELETE: RequestHandler = async ({ request }) => {
+	const game = +(await request.text());
+	const { error: pgError } = await supabase.from('moves').delete().eq('game', game);
+	broadcast('restartGame');
 
 	if (pgError) {
 		console.error(pgError);

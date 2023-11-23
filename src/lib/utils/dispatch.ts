@@ -1,9 +1,6 @@
 import * as stores from '$lib/stores';
-import { getContext } from 'svelte';
 
-export async function dispatch(dispatchData: Dispatch, shouldPublishEvent = true) {
-	const game = getContext('game');
-
+export function enactMove(dispatchData: Dispatch) {
 	const { storeName, action, args = [] } = dispatchData;
 
 	if (!stores[storeName]) throw new Error(`Invalid store ${storeName}`);
@@ -12,12 +9,14 @@ export async function dispatch(dispatchData: Dispatch, shouldPublishEvent = true
 
 	//@ts-ignore
 	stores[storeName][action](...args);
+}
 
-	if (shouldPublishEvent) {
-		await fetch('/moves', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ ...dispatchData, game })
-		});
-	}
+export async function dispatchMove(dispatchData: Dispatch, game: number) {
+	enactMove(dispatchData);
+
+	await fetch('/moves', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ ...dispatchData, game })
+	});
 }

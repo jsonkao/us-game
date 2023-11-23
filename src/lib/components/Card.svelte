@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { chipColors, chipTextColors } from '$lib/colors.js';
 	import { playerStore } from '$lib/stores';
-	import { dispatch } from '$lib/utils/dispatch';
+	import { dispatchMove } from '$lib/utils/dispatch';
+	import { getContext } from 'svelte';
 
 	export let card: Card | Noble;
 	export let isNoble = false;
+
+	const game = getContext('game');
 
 	let { costs, score, index } = card;
 	let isPurchased = card.owner !== 'bank' && !isNoble;
@@ -19,7 +22,7 @@
 	class:isPurchased
 	style="--card-color: {chipColors[discount]}; --image: url('{image}')"
 	on:click={() =>
-		dispatch({ storeName: 'cardStore', action: 'purchase', args: [$playerStore, index] })}
+		dispatchMove({ storeName: 'cardStore', action: 'purchase', args: [$playerStore, index] }, game)}
 	disabled={isPurchased || isNoble}
 >
 	<p class="score" style="color: {chipTextColors[discount] || (isNoble ? '#fff' : '#121212')}">

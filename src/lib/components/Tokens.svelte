@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { chipColors } from '$lib/colors.js';
 	import { tokenStore, playerStore } from '$lib/stores';
-	import { dispatch } from '$lib/utils/dispatch';
+	import { dispatchMove } from '$lib/utils/dispatch';
 	import { flip } from 'svelte/animate';
 	import { send, receive } from '$lib/utils/helpers';
+	import { getContext } from 'svelte';
 
 	export let owner: Owner;
+
+	const game = getContext('game');
 
 	$: tokens = $tokenStore.filter((token) => token.owner === owner);
 </script>
@@ -25,11 +28,14 @@
 					style="--color: {chipColors[color]};"
 					animate:flip
 					on:click={() =>
-						dispatch({
-							storeName: 'tokenStore',
-							action: 'take',
-							args: [owner === 'bank' ? $playerStore : 'bank', index]
-						})}
+						dispatchMove(
+							{
+								storeName: 'tokenStore',
+								action: 'take',
+								args: [owner === 'bank' ? $playerStore : 'bank', index]
+							},
+							game
+						)}
 				/>
 			{/each}
 		</div>

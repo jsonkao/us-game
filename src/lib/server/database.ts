@@ -5,4 +5,3 @@ import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 const supabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 export default supabase;
-

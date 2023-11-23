@@ -6,20 +6,22 @@ const PUBLIC_SUPABASE_ANON_KEY =
 
 const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY);
 
-export async function getMoves(): Promise<Move[]> {
+export async function getMoves(game: number): Promise<Move[]> {
 	let { data, error } = await supabase.from('moves').select('*');
 
 	if (error) {
 		return [];
 	}
 
-	const moves: Array<Move> = (data || []).map(({ storeName, action, args, id, game }) => ({
-		storeName,
-		action,
-		args: JSON.parse(args),
-		id,
-		game
-	}));
+	const moves: Array<Move> = (data || [])
+		.map(({ storeName, action, args, id, game }) => ({
+			storeName,
+			action,
+			args: JSON.parse(args),
+			id,
+			game
+		}))
+		.filter((m) => game === m.game);
 
 	return moves;
 }
@@ -32,6 +34,11 @@ export async function getCurrentGame() {
 		.limit(1);
 
 	if (!error && data.length > 0) return data[0].id;
+}
+
+export async function getGameData(gameArg = null) {
+	let game = gameArg === null ? await getCurrentGame() : gameArg;
+	return { moves: await getMoves(game), game };
 }
 
 export default supabase;
