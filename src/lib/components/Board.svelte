@@ -21,7 +21,6 @@
 	if (browser) beginSocket(game);
 
 	$: {
-	if (!browser) console.log({ game, moves, player: $playerStore });
 		nobleStore.init(game);
 		cardStore.init(game);
 		moves.forEach(enactMove);
