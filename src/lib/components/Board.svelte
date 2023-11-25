@@ -23,8 +23,10 @@
 	$: {
 		nobleStore.init(game);
 		cardStore.init(game);
-		moves.forEach(enactMove);
-		moveStore.set(moves);
+		if (browser) {
+			moves.forEach(enactMove);
+			moveStore.set(moves);
+		}
 	}
 
 	export async function restartGame() {
