@@ -15,7 +15,7 @@
 <div>
 	<Tokens owner={player} />
 
-	<div class="cards-container" style="flex-direction: {player ? 'row-reverse' : 'row'}">
+	<div class="cards-container" class:left={player === 0}>
 		{#each [0, 1, 2, 3, 4] as color (color)}
 			<div class="cards" class:has-cards={cards.filter((c) => c.discount === color).length > 0}>
 				{#each cards.filter((c) => c.discount === color) as card (card.index)}
@@ -40,6 +40,7 @@
 	.cards-container {
 		display: flex;
 		margin-bottom: 16px;
+		flex-direction: row-reverse;
 	}
 
 	.cards {
@@ -59,6 +60,21 @@
 	}
 
 	.has-cards {
-		width: calc(var(--card-width) / 2 + 10px);
+		--spacing: 10px;
+		width: calc(var(--card-width) / 2 + var(--spacing));
+	}
+
+	.cards-container.left {
+		flex-direction: row;
+	}
+
+	@media (max-width: 900px) {
+		.has-cards {
+			--spacing: 6px;
+		}
+	}
+
+	.cards-container.left .has-cards:last-child {
+		--spacing: 0;
 	}
 </style>

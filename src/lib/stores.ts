@@ -11,7 +11,9 @@ function createNobleStore() {
 		init: (game: number) => {
 			const shuffleAndSlice = (x: Array<any>) => shuffle(x, game).slice(0, 3);
 			const imageKeys = shuffleAndSlice([0, 1, 2, 3]);
-			const initialNobles: Array<Noble> = shuffleAndSlice(nobles).map((n, i) => ({
+			const initialNobles: Array<Noble> = shuffleAndSlice(
+				nobles.sort((a, b) => a.index - b.index)
+			).map((n, i) => ({
 				...n,
 				owner: 'bank',
 				image: '/' + imageKeys[i] + '.webp'
@@ -20,14 +22,20 @@ function createNobleStore() {
 		},
 		checkForNobles: (player: Owner, cards: Array<Card>) => {
 			update((nobles) => {
+				if (nobles.length === 0) return nobles;
 				// If player is eligible for a noble, assign that player to be the owner for those nobles
 				const playerCards = cards.filter((c) => c.owner === player);
-				const eligibleNobles = nobles.filter(({ costs }) =>
-					costs.every(
-						(value, color) => playerCards.filter((c) => c.discount === color).length >= value
-					)
-				);
-				eligibleNobles.forEach((n) => (n.owner = player));
+				try {
+					const eligibleNobles = nobles.filter(({ costs }) =>
+						costs.every(
+							(value, color) => playerCards.filter((c) => c.discount === color).length >= value
+						)
+					);
+					eligibleNobles.forEach((n) => (n.owner = player));
+				} catch (e) {
+					// console.error(e);
+					// console.log(nobles, nobles.map(n => n.costs))
+				}
 				return nobles;
 			});
 		}
@@ -95,22 +103,30 @@ function createCurrentPlayerStore(numPlayers = 2) {
 
 	return {
 		subscribe,
-		nextTurn: (currentPlayer: number) => update(() => (currentPlayer + 1) % numPlayers)
+		nextTurn: (currentPlayer: number) => {
+			update(() => (currentPlayer + 1) % numPlayers);
+		}
 	};
 }
 
 export const tokenStore = createTokenStore();
 
 function createCardStore() {
-	const initialCards: Array<Card> = cards.map((c) => ({
-		...c,
-		owner: 'bank'
-	}));
-	const { subscribe, update } = writable(initialCards);
+	const initialCards: Array<Card> = [];
+	const { subscribe, update, set } = writable(initialCards);
 
 	return {
 		subscribe,
-		init: (game: number) => update((cards) => shuffle(cards, game)),
+		init: (game: number) =>
+			set(
+				shuffle(
+					cards.map((c) => ({
+						...c,
+						owner: 'bank'
+					})),
+					game
+				)
+			),
 		purchase: (buyer: Owner, cardIndex: number) => {
 			update(($cards) => {
 				const theCard = $cards.find((c) => c.index === cardIndex);

@@ -77,6 +77,13 @@
 		font-size: 20px;
 	}
 
+	@media (max-width: 900px) {
+		button.isPurchased .score {
+			font-size: 17px;
+			padding: 4px;
+		}
+	}
+
 	button:not(.isNoble):not(.isPurchased):hover {
 		cursor: pointer;
 		transform: translateY(-2px);

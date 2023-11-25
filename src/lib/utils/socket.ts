@@ -1,11 +1,17 @@
 import { enactMove } from '$lib/utils/dispatch';
 import { chatStore } from '$lib/stores';
 import supabase from '$lib/client-database';
-import { browser } from '$app/environment';
+import { dev, browser } from '$app/environment';
 
-const channel = supabase.channel('moves');
-
+let channel = supabase.channel('moves');
 export function beginSocket(game: number) {
+	if (dev) {
+		supabase
+			.removeChannel('moves')
+			.then(() => (channel = supabase.channel('moves')))
+			.catch(() => {});
+	}
+
 	// Listen to inserts
 	channel
 		.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'moves' }, handleInsert)
@@ -21,7 +27,11 @@ export function beginSocket(game: number) {
 
 	supabase
 		.channel('restartGame')
-		.on('broadcast', { event: 'restart' }, () => console.log('testing') || window.location.reload());
+		.on(
+			'broadcast',
+			{ event: 'restart' },
+			() => console.log('testing') || window.location.reload()
+		);
 
 	supabase
 		.channel('startNewGame')

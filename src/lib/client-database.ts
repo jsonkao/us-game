@@ -10,7 +10,7 @@ export async function getMoves(game: number): Promise<Move[]> {
 	let { data, error } = await supabase.from('moves').select('*');
 
 	if (error) {
-		return [];
+		throw error;
 	}
 
 	const moves: Array<Move> = (data || [])

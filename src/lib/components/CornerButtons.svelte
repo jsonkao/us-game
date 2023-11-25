@@ -6,7 +6,7 @@
 	import { broadcastEmoji } from '$lib/utils/socket';
 	import { getContext } from 'svelte';
 
-	const game = getContext('game');
+	const game: number = getContext('game');
 
 	const CHAT_FLY_DURATION = 900;
 
@@ -52,7 +52,7 @@
 			<div
 				class:left={player === 0}
 				in:fly={{
-					x: (player ? '' : '-') + '100vw',
+					x: (player ? '' : '-') + '80vw',
 					duration: CHAT_FLY_DURATION
 				}}
 				out:fade={{ duration: 2000 }}
