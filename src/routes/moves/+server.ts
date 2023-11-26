@@ -24,20 +24,15 @@ export const POST: RequestHandler = async ({ request }) => {
 let channel = supabase.channel('moves');
 
 export const PATCH: RequestHandler = async () => {
-	// Increment the game
 	const { error: pgError } = await supabase.from('games').insert([{}]);
-	channel.subscribe(async (status) => {
-		if (status !== 'SUBSCRIBED') return;
-		const response = await channel.send({
-			type: 'broadcast',
-			event: 'restart',
-			payload: true
-		});
-
-		if (response === 'error') {
-			// throw error(500, 'Error sending message to channel')
-		}
+	const response = await channel.send({
+		type: 'broadcast',
+		event: 'restart',
+		payload: { restart: true }
 	});
+	if (response === 'error') {
+		// throw error(500, 'Error sending message to channel')
+	}
 
 	if (pgError) {
 		console.error(pgError);
@@ -50,18 +45,14 @@ export const PATCH: RequestHandler = async () => {
 export const DELETE: RequestHandler = async ({ request }) => {
 	const game = +(await request.text());
 	const { error: pgError } = await supabase.from('moves').delete().eq('game', game);
-	channel.subscribe(async (status) => {
-		if (status !== 'SUBSCRIBED') return;
-		const response = await channel.send({
-			type: 'broadcast',
-			event: 'restart',
-			payload: true
-		});
-
-		if (response === 'error') {
-			// throw error(500, 'Error sending message to channel')
-		}
+	const response = await channel.send({
+		type: 'broadcast',
+		event: 'restart',
+		payload: { restart: true }
 	});
+	if (response === 'error') {
+		// throw error(500, 'Error sending message to channel')
+	}
 
 	if (pgError) {
 		console.error(pgError);

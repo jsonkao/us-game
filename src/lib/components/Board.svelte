@@ -2,7 +2,7 @@
 	import { nobleStore, cardStore } from '$lib/stores';
 	import { enactMove } from '$lib/utils/dispatch';
 	import { moveStore } from '$lib/stores';
-	import { beginSocket, restartGame } from '$lib/utils/socket';
+	import { beginSocket } from '$lib/utils/socket';
 
 	import CardGrid from '$lib/components/CardGrid.svelte';
 	import Card from '$lib/components/Card.svelte';
@@ -10,7 +10,7 @@
 	import Tokens from '$lib/components/Tokens.svelte';
 	import CornerButtons from '$lib/components/CornerButtons.svelte';
 	import Presence from '$lib/components/Presence.svelte';
-	import { setContext, getContext } from 'svelte';
+	import { setContext } from 'svelte';
 	import { browser } from '$app/environment';
 
 	export let data;
@@ -29,14 +29,10 @@
 	}
 
 	export async function restartGameHandler() {
-		const response = await fetch('/moves', {
+		await fetch('/moves', {
 			method: 'DELETE',
 			body: game
 		});
-		if (response.ok) {
-			const response = restartGame();
-			console.log(response);
-		}
 	}
 
 	export async function startNewGame() {

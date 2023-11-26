@@ -3,8 +3,6 @@
 
 	$: locations = Object.keys($presenceStore).map((key) => $presenceStore[key][0].location);
 	$: uniqueLocations = [...new Set(locations)];
-
-	console.log($presenceStore)
 </script>
 
 {#if locations.length}
