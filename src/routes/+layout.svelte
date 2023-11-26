@@ -15,7 +15,8 @@
 
 	export let data;
 
-	let { game, moves, nobles, cards } = data;
+	let { game, moves, cards } = data;
+	let nobles = data.nobles;
 
 	setContext('game', game);
 
@@ -31,7 +32,7 @@
 	export async function restartGameHandler() {
 		await fetch('/moves', {
 			method: 'DELETE',
-			body: game
+			body: game.toString()
 		});
 	}
 
@@ -157,3 +158,5 @@
 		}
 	}
 </style>
+
+<slot />

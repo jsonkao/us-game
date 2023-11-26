@@ -3,7 +3,9 @@ import { cards, nobles } from '$lib/initials.json';
 import { shuffle } from '$lib/utils/helpers';
 
 export default async function (game: number) {
-	const shuffleAndSlice = (x: Array<any>) => shuffle(x, game).slice(0, 3);
+	function shuffleAndSlice<Type>(x: Array<Type>) {
+		return shuffle(x, game).slice(0, 3);
+	}
 	const imageKeys = shuffleAndSlice([0, 1, 2, 3]);
 
 	return {
@@ -11,13 +13,13 @@ export default async function (game: number) {
 		moves: await getMoves(game),
 		nobles: shuffleAndSlice(nobles.sort((a, b) => a.index - b.index)).map((n, i) => ({
 			...n,
-			owner: 'bank',
+			owner: 'bank' as Owner,
 			image: '/' + imageKeys[i] + '.webp'
 		})),
 		cards: shuffle(
 			cards.map((c) => ({
 				...c,
-				owner: 'bank'
+				owner: 'bank' as Owner
 			})),
 			game
 		)
