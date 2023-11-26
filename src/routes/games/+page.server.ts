@@ -1,6 +1,6 @@
 import supabase from '$lib/client-database';
 
-export async function load({ params: { game } }) {
+export async function load() {
 	let { data, error } = await supabase
 		.from('games')
 		.select('*')

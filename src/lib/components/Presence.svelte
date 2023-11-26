@@ -2,8 +2,6 @@
 	import { presenceStore } from '$lib/stores';
 
 	$: locations = Object.keys($presenceStore).map((key) => $presenceStore[key][0].location);
-
-	$: console.log($presenceStore)
 </script>
 
 {#if locations.length}
@@ -19,20 +17,20 @@
 
 <style>
 	div {
-    margin-top: 8px;
+		margin-top: 8px;
 		display: flex;
-    grid-column: 1 / -1;
-    justify-content: center;
+		grid-column: 1 / -1;
+		justify-content: center;
 	}
 
-  p, span {
-    font-size: inherit;
-  }
+	p {
+		font-size: inherit;
+	}
 
-  span:not(:last-child)::after {
-    content: ' and'
-  }
-  span:last-child::after {
-    content: '.'
-  }
+	span:not(:last-child)::after {
+		content: ' and ';
+	}
+	span:last-child::after {
+		content: '.';
+	}
 </style>

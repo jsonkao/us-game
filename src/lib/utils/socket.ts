@@ -35,8 +35,7 @@ export function beginSocket(game: number) {
 		if (move.game === game) enactMove(move);
 	}
 
-	// Use getLocation to add a location to the game using presence channel
-	fetch('/location')
+	fetch(`https://ipapi.co/region/`)
 		.then((res) => res.text())
 		.then((location) => channel.track({ location }));
 }
@@ -56,11 +55,4 @@ export function restartGame() {
 		event: 'restart',
 		payload: { restart: true }
 	});
-}
-
-async function getLocation(ip: string) {
-	if (ip === '127.0.0.1') return 'localhost';
-
-	const response = await (await fetch(`https://ipapi.co/${ip}/region/`)).text();
-	return response;
 }
