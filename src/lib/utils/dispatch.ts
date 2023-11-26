@@ -12,8 +12,8 @@ export function enactMove(dispatchData: Dispatch) {
 }
 
 export async function dispatchMove(dispatchData: Dispatch, game: number) {
+	if (game === undefined) throw 'Game cannot be undefined in dispatch'
 	enactMove(dispatchData);
-
 	await fetch('/moves', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },

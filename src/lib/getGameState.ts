@@ -1,15 +1,13 @@
-import { getCurrentGame, getMoves } from '$lib/client-database';
+import { getMoves } from '$lib/client-database';
 import { cards, nobles } from '$lib/initials.json';
 import { shuffle } from '$lib/utils/helpers';
 
-export default async function (game: number | undefined = undefined) {
-	if (game === undefined) {
-		game = await getCurrentGame();
-	}
+export default async function (game: number) {
 	const shuffleAndSlice = (x: Array<any>) => shuffle(x, game).slice(0, 3);
 	const imageKeys = shuffleAndSlice([0, 1, 2, 3]);
 
 	return {
+		game,
 		moves: await getMoves(game),
 		nobles: shuffleAndSlice(nobles.sort((a, b) => a.index - b.index)).map((n, i) => ({
 			...n,

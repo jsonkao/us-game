@@ -2,13 +2,16 @@
 	import { presenceStore } from '$lib/stores';
 
 	$: locations = Object.keys($presenceStore).map((key) => $presenceStore[key][0].location);
+	$: uniqueLocations = [...new Set(locations)];
+
+	console.log($presenceStore)
 </script>
 
 {#if locations.length}
 	<div>
 		<p>
 			{locations.length} online in
-			{#each locations as location}
+			{#each uniqueLocations as location}
 				<span>{location}</span>
 			{/each}
 		</p>

@@ -7,7 +7,7 @@
 	export let card: Card | Noble;
 	export let isNoble = false;
 
-	const game = getContext('game');
+	const game: number = getContext('game');
 
 	let { costs, score, index } = card;
 	let isPurchased = card.owner !== 'bank' && !isNoble;

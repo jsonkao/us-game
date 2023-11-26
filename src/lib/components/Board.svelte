@@ -10,7 +10,7 @@
 	import Tokens from '$lib/components/Tokens.svelte';
 	import CornerButtons from '$lib/components/CornerButtons.svelte';
 	import Presence from '$lib/components/Presence.svelte';
-	import { setContext } from 'svelte';
+	import { setContext, getContext } from 'svelte';
 	import { browser } from '$app/environment';
 
 	export let data;

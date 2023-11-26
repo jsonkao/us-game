@@ -8,7 +8,7 @@
 
 	export let owner: Owner;
 
-	const game = getContext('game');
+	const game: number = getContext('game');
 
 	$: tokens = $tokenStore.filter((token) => token.owner === owner);
 </script>

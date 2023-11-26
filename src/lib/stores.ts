@@ -172,4 +172,4 @@ export function createChatStore() {
 
 export const chatStore = createChatStore();
 
-export const presenceStore = writable({});
+export const presenceStore = writable<Record<string, Array<Presence>>>({});
