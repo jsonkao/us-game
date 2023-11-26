@@ -1,6 +1,4 @@
 import { writable, get } from 'svelte/store';
-import { cards, nobles } from '$lib/initials.json';
-import { shuffle } from '$lib/utils/helpers';
 
 function createNobleStore() {
 	const initialNobles: Array<Noble> = [];
@@ -8,18 +6,7 @@ function createNobleStore() {
 
 	return {
 		subscribe,
-		init: (game: number) => {
-			const shuffleAndSlice = (x: Array<any>) => shuffle(x, game).slice(0, 3);
-			const imageKeys = shuffleAndSlice([0, 1, 2, 3]);
-			const initialNobles: Array<Noble> = shuffleAndSlice(
-				nobles.sort((a, b) => a.index - b.index)
-			).map((n, i) => ({
-				...n,
-				owner: 'bank',
-				image: '/' + imageKeys[i] + '.webp'
-			}));
-			set(initialNobles);
-		},
+		set,
 		checkForNobles: (player: Owner, cards: Array<Card>) => {
 			update((nobles) => {
 				if (nobles.length === 0) return nobles;
@@ -117,16 +104,7 @@ function createCardStore() {
 
 	return {
 		subscribe,
-		init: (game: number) =>
-			set(
-				shuffle(
-					cards.map((c) => ({
-						...c,
-						owner: 'bank'
-					})),
-					game
-				)
-			),
+		set,
 		purchase: (buyer: Owner, cardIndex: number) => {
 			update(($cards) => {
 				const theCard = $cards.find((c) => c.index === cardIndex);
@@ -198,3 +176,5 @@ export function createChatStore() {
 }
 
 export const chatStore = createChatStore();
+
+export const presenceStore = writable({});

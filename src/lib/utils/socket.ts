@@ -1,15 +1,23 @@
 import { enactMove } from '$lib/utils/dispatch';
-import { chatStore } from '$lib/stores';
+import { chatStore, presenceStore } from '$lib/stores';
 import supabase from '$lib/client-database';
-import { dev, browser } from '$app/environment';
+import { browser } from '$app/environment';
 
-let channel = supabase.channel('moves');
-export function beginSocket(game: number) {
-	if (dev) {
+const uid = 'id' + Math.random().toString(16).slice(2);
+
+const makeChannel = () => supabase.channel('moves', { config: { presence: { key: uid } } });
+let channel = makeChannel();
+
+export function beginSocket(game: number, ip: string) {
+	if (channel.state === 'joined') {
 		supabase
 			.removeChannel('moves')
-			.then(() => (channel = supabase.channel('moves')))
+			.then(() => {
+				channel = makeChannel();
+				beginSocket(game, ip);
+			})
 			.catch(() => {});
+		return;
 	}
 
 	// Listen to inserts
@@ -18,6 +26,8 @@ export function beginSocket(game: number) {
 		.on('broadcast', { event: 'emoji' }, ({ payload: { emoji, player } }) =>
 			chatStore.add(emoji, player)
 		)
+		.on('broadcast', { event: 'restart' }, () => browser && window.location.reload())
+		.on('presence', { event: 'sync' }, () => presenceStore.set(channel.presenceState()))
 		.subscribe();
 
 	function handleInsert(payload) {
@@ -25,17 +35,11 @@ export function beginSocket(game: number) {
 		if (move.game === game) enactMove(move);
 	}
 
-	supabase
-		.channel('restartGame')
-		.on(
-			'broadcast',
-			{ event: 'restart' },
-			() => console.log('testing') || window.location.reload()
-		);
-
-	supabase
-		.channel('startNewGame')
-		.on('broadcast', { event: 'restart' }, () => browser && window.location.reload());
+	// Use getLocation to add a location to the game using presence channel
+	getLocation(ip).then((location) => {
+		console.log(channel, location);
+		channel.track({ location });
+	});
 }
 
 export function broadcastEmoji(emoji: string, player: number) {
@@ -45,4 +49,19 @@ export function broadcastEmoji(emoji: string, player: number) {
 		event: 'emoji',
 		payload: { emoji, player }
 	});
+}
+
+export function restartGame() {
+	channel.send({
+		type: 'broadcast',
+		event: 'restart',
+		payload: { restart: true }
+	});
+}
+
+async function getLocation(ip: string) {
+	if (ip === '127.0.0.1') return 'localhost';
+
+	const response = await (await fetch(`https://ipapi.co/${ip}/region/`)).text();
+	return response;
 }

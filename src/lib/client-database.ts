@@ -26,13 +26,16 @@ export async function getMoves(game: number): Promise<Move[]> {
 	return moves;
 }
 
-export async function getCurrentGame() {
+export async function getCurrentGame(): number {
 	let { data, error } = await supabase
 		.from('games')
 		.select('*')
 		.order('id', { ascending: false })
 		.limit(1);
 
+	if (error) {
+		throw error;
+	}
 	if (!error && data.length > 0) return data[0].id;
 }
 

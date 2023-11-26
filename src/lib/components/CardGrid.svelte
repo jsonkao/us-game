@@ -11,7 +11,7 @@
 	$: cardsForGrid = $cardStore.filter((c) => c.owner === 'bank');
 </script>
 
-<div class="card-grid" style="opacity: {+browser}">
+<div class="card-grid">
 	{#each levels as level}
 		{#if cardsForGrid.filter((c) => c.level === level).length > 4}
 			<div class="stack">
@@ -36,7 +36,6 @@
 		grid-template-columns: repeat(5, var(--card-width));
 		grid-template-rows: repeat(3, var(--card-height));
 		gap: var(--card-grid-gap);
-		transition-duration: .2s;
 	}
 
 	.stack {

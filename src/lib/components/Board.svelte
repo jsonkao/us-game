@@ -1,39 +1,42 @@
 <script lang="ts">
-	import { nobleStore, cardStore, playerStore } from '$lib/stores';
+	import { nobleStore, cardStore } from '$lib/stores';
 	import { enactMove } from '$lib/utils/dispatch';
 	import { moveStore } from '$lib/stores';
 	import { browser } from '$app/environment';
-	import { beginSocket } from '$lib/utils/socket';
+	import { beginSocket, restartGame } from '$lib/utils/socket';
 
 	import CardGrid from '$lib/components/CardGrid.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import PlayerHand from '$lib/components/PlayerHand.svelte';
 	import Tokens from '$lib/components/Tokens.svelte';
 	import CornerButtons from '$lib/components/CornerButtons.svelte';
+	import Presence from '$lib/components/Presence.svelte';
 	import { setContext } from 'svelte';
 
 	export let data;
 
-	let { game, moves } = data;
+	let { game, moves, nobles, cards, ip } = data;
 
 	setContext('game', game);
 
-	if (browser) beginSocket(game);
+	if (browser) beginSocket(game, ip);
 
 	$: {
-		nobleStore.init(game);
-		cardStore.init(game);
-		if (browser) {
-			moves.forEach(enactMove);
-			moveStore.set(moves);
-		}
+		nobleStore.set(nobles);
+		cardStore.set(cards);
+		moves.forEach(enactMove);
+		moveStore.set(moves);
 	}
 
-	export async function restartGame() {
-		await fetch('/moves', {
+	export async function restartGameHandler() {
+		const response = await fetch('/moves', {
 			method: 'DELETE',
 			body: game
 		});
+		if (response.ok) {
+			const response = restartGame();
+			console.log(response);
+		}
 	}
 
 	export async function startNewGame() {
@@ -51,7 +54,7 @@
 	<CardGrid />
 	<PlayerHand player={1} />
 
-	<div class="nobles" style="opacity: {+browser}">
+	<div class="nobles">
 		<div>
 			{#each $nobleStore as card}
 				{#if card.owner === 'bank'}
@@ -62,9 +65,11 @@
 	</div>
 
 	<div class="restart-game">
-		<button on:click={restartGame}>Restart.</button>
+		<button on:click={restartGameHandler}>Restart.</button>
 		<button on:click={startNewGame}>Start new game.</button>
 	</div>
+
+	<Presence />
 </div>
 
 <style>
@@ -111,7 +116,6 @@
 		gap: 8px;
 		grid-column: 1 / -1;
 		margin-top: 50px;
-		transition-duration: 0.2s;
 	}
 
 	.nobles div {

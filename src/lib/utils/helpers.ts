@@ -39,6 +39,8 @@ export function shuffle<Type>(array: Array<Type>, seed: number): Array<Type> {
 		array[m] = array[i];
 		array[i] = t;
 		++seed; // <-- ADDED LINE
+
+		if (seed === undefined || isNaN(i) || isNaN(m) || t === undefined) throw array;
 	}
 
 	return array;

@@ -21,26 +21,23 @@ export const POST: RequestHandler = async ({ request }) => {
 	return json({}, { status: 201 });
 };
 
-function broadcast(channelName: string) {
-	const channel = supabase.channel(channelName);
-	channel.subscribe((status) => {
-		// Wait for successful connection
-		if (status !== 'SUBSCRIBED') {
-			return null;
-		}
-
-		// Send a message once the client is subscribed
-		channel.send({
-			type: 'broadcast',
-			event: 'restart'
-		});
-	});
-}
+let channel = supabase.channel('moves');
 
 export const PATCH: RequestHandler = async () => {
 	// Increment the game
 	const { error: pgError } = await supabase.from('games').insert([{}]);
-	broadcast('startNewGame');
+	channel.subscribe(async (status) => {
+		if (status !== 'SUBSCRIBED') return;
+		const response = await channel.send({
+			type: 'broadcast',
+			event: 'restart',
+			payload: true
+		});
+
+		if (response === 'error') {
+			// throw error(500, 'Error sending message to channel')
+		}
+	});
 
 	if (pgError) {
 		console.error(pgError);
@@ -53,7 +50,18 @@ export const PATCH: RequestHandler = async () => {
 export const DELETE: RequestHandler = async ({ request }) => {
 	const game = +(await request.text());
 	const { error: pgError } = await supabase.from('moves').delete().eq('game', game);
-	broadcast('restartGame');
+	channel.subscribe(async (status) => {
+		if (status !== 'SUBSCRIBED') return;
+		const response = await channel.send({
+			type: 'broadcast',
+			event: 'restart',
+			payload: true
+		});
+
+		if (response === 'error') {
+			// throw error(500, 'Error sending message to channel')
+		}
+	});
 
 	if (pgError) {
 		console.error(pgError);
