@@ -8,13 +8,13 @@ const uid = 'id' + Math.random().toString(16).slice(2);
 const makeChannel = () => supabase.channel('moves', { config: { presence: { key: uid } } });
 let channel = makeChannel();
 
-export function beginSocket(game: number, ip: string) {
+export function beginSocket(game: number) {
 	if (channel.state === 'joined') {
 		supabase
 			.removeChannel('moves')
 			.then(() => {
 				channel = makeChannel();
-				beginSocket(game, ip);
+				beginSocket(game);
 			})
 			.catch(() => {});
 		return;
@@ -36,10 +36,9 @@ export function beginSocket(game: number, ip: string) {
 	}
 
 	// Use getLocation to add a location to the game using presence channel
-	getLocation(ip).then((location) => {
-		console.log(channel, location);
-		channel.track({ location });
-	});
+	fetch('/location')
+		.then((res) => res.text())
+		.then((location) => channel.track({ location }));
 }
 
 export function broadcastEmoji(emoji: string, player: number) {

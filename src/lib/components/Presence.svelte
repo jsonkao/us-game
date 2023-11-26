@@ -2,6 +2,8 @@
 	import { presenceStore } from '$lib/stores';
 
 	$: locations = Object.keys($presenceStore).map((key) => $presenceStore[key][0].location);
+
+	$: console.log($presenceStore)
 </script>
 
 {#if locations.length}

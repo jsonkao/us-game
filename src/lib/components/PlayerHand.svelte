@@ -8,7 +8,6 @@
 
 	export let player = 0;
 
-	// $: console.log($cardStore)
 	$: cards = $cardStore.filter((card) => card.owner === player);
 	$: nobles = $nobleStore.filter((card) => card.owner === player);
 </script>

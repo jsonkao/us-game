@@ -12,17 +12,12 @@ function createNobleStore() {
 				if (nobles.length === 0) return nobles;
 				// If player is eligible for a noble, assign that player to be the owner for those nobles
 				const playerCards = cards.filter((c) => c.owner === player);
-				try {
-					const eligibleNobles = nobles.filter(({ costs }) =>
-						costs.every(
-							(value, color) => playerCards.filter((c) => c.discount === color).length >= value
-						)
-					);
-					eligibleNobles.forEach((n) => (n.owner = player));
-				} catch (e) {
-					// console.error(e);
-					// console.log(nobles, nobles.map(n => n.costs))
-				}
+				const eligibleNobles = nobles.filter(({ costs }) =>
+					costs.every(
+						(value, color) => playerCards.filter((c) => c.discount === color).length >= value
+					)
+				);
+				eligibleNobles.forEach((n) => (n.owner = player));
 				return nobles;
 			});
 		}

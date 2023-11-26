@@ -2,7 +2,6 @@
 	import { nobleStore, cardStore } from '$lib/stores';
 	import { enactMove } from '$lib/utils/dispatch';
 	import { moveStore } from '$lib/stores';
-	import { browser } from '$app/environment';
 	import { beginSocket, restartGame } from '$lib/utils/socket';
 
 	import CardGrid from '$lib/components/CardGrid.svelte';
@@ -12,14 +11,15 @@
 	import CornerButtons from '$lib/components/CornerButtons.svelte';
 	import Presence from '$lib/components/Presence.svelte';
 	import { setContext } from 'svelte';
+	import { browser } from '$app/environment';
 
 	export let data;
 
-	let { game, moves, nobles, cards, ip } = data;
+	let { game, moves, nobles, cards } = data;
 
 	setContext('game', game);
 
-	if (browser) beginSocket(game, ip);
+	$: browser && beginSocket(game);
 
 	$: {
 		nobleStore.set(nobles);
