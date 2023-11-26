@@ -1,12 +1,11 @@
+import { building } from '$app/environment';
 import getGameState from '$lib/getGameState';
 
 export async function load(event) {
 	const output = await getGameState();
 
-	try {
+	if (!building) {
 		output.ip = event.getClientAddress();
-	} catch (e) {
-		console.error(e);
 	}
 
 	return output;
