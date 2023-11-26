@@ -1,5 +1,7 @@
 import { writable, get } from 'svelte/store';
 
+const INFINITE_MONEY = true;
+
 function createNobleStore() {
 	const initialNobles: Array<Noble> = [];
 	const { subscribe, update, set } = writable(initialNobles);
@@ -40,7 +42,7 @@ function createTokenStore() {
 		take: (newOwner: Owner, index: number) => {
 			update((tokens) => {
 				tokens[index].owner = newOwner;
-				// tokens[index].lastModified = Date.now();
+				tokens[index].lastModified = Date.now();
 				return tokens;
 			});
 		},
@@ -67,7 +69,7 @@ function createTokenStore() {
 				});
 				return true;
 			}
-			return false;
+			return INFINITE_MONEY;
 		}
 	};
 }
@@ -151,15 +153,18 @@ export function createChatStore() {
 		subscribe,
 		add: (emoji: string, player: number) => {
 			const height = window.innerHeight;
+			const width = window.innerWidth;
+			const translateX = (player ? 1 : -1) * Math.random() * 0.3 * width;
 			update((chats: Array<Chat>) => [
 				...chats,
 				{
 					emoji,
 					player,
 					id: id++,
-					style: `transform: translate(${Math.random() * 200 * (player ? 1 : -1)}%, ${
+					flyX: (player ? 1 : -1) * (width - 80 - 30) - translateX,
+					style: `transform: translate(${translateX}px, ${
 						Math.random() * height * 0.6
-					}px); --rotate: ${(Math.random() - 0.5) * 60}deg; --bounce-height: ${
+					}px); --rotate: ${(Math.random() - 0.5) * 0}deg; --bounce-height: ${
 						-(1 - Math.random() / 2) * height * 0.3
 					}`
 				}

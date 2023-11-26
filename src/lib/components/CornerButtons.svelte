@@ -5,10 +5,11 @@
 	import { fade, fly } from 'svelte/transition';
 	import { broadcastEmoji } from '$lib/utils/socket';
 	import { getContext } from 'svelte';
+	import { offline } from '$lib/utils/helpers';
 
 	const game: number = getContext('game');
 
-	const CHAT_FLY_DURATION = 900;
+	const CHAT_FLY_DURATION = 2000;
 
 	const emojis = ['👹', '😌', '🙂', '🤬', '😟', '⌛️'].map((text) =>
 		text.replace(/[\u00A0-\u00FF]/g, function (c) {
@@ -39,7 +40,12 @@
 		{#each [0, 1] as player}
 			<div class="emojis">
 				{#each emojis as emoji}
-					<button on:click={() => broadcastEmoji(emoji, player)}>
+					<button
+						on:click={() => {
+							chatStore.add(emoji, player);
+							!offline && broadcastEmoji(emoji, player);
+						}}
+					>
 						{@html emoji}
 					</button>
 				{/each}
@@ -48,11 +54,11 @@
 	</div>
 
 	<div class="emoji-chats">
-		{#each $chatStore as { emoji, player, id, style } (id)}
+		{#each $chatStore as { emoji, player, id, style, flyX } (id)}
 			<div
 				class:left={player === 0}
 				in:fly={{
-					x: (player ? '' : '-') + '80vw',
+					x: flyX,
 					duration: CHAT_FLY_DURATION
 				}}
 				out:fade={{ duration: 2000 }}
@@ -101,10 +107,10 @@
 
 	@keyframes bounce {
 		from {
-			transform: translateY(0px) rotate(0deg);
+			transform: translateY(0px);
 		}
 		to {
-			transform: translateY(var(--bounce-height)) rotate(60deg);
+			transform: translateY(var(--bounce-height));
 		}
 	}
 
@@ -133,6 +139,7 @@
 
 	.switch-turn {
 		position: relative;
+		margin-bottom: 2px;
 	}
 
 	.switch-turn p {
@@ -155,6 +162,7 @@
 		font-size: 30px;
 		pointer-events: all;
 		transition-duration: 0.2s;
+		line-height: 1;
 	}
 
 	.emojis {

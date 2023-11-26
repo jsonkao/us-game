@@ -41,7 +41,6 @@ export function beginSocket(game: number) {
 }
 
 export function broadcastEmoji(emoji: string, player: number) {
-	chatStore.add(emoji, player);
 	channel.send({
 		type: 'broadcast',
 		event: 'emoji',

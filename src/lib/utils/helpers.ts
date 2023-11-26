@@ -50,3 +50,8 @@ function random(seed: number) {
 	var x = Math.sin(seed++) * 10000;
 	return x - Math.floor(x);
 }
+
+
+export const offline = true; // browser && new URLSearchParams(window.location.search).get('offline');
+
+// console.log('OFFLINE', offline)

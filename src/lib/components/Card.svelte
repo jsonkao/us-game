@@ -77,7 +77,7 @@
 		font-size: 20px;
 	}
 
-	@media (max-width: 900px) {
+	@media (max-width: 960px) {
 		button.isPurchased .score {
 			font-size: 17px;
 			padding: 4px;
@@ -149,5 +149,20 @@
 		justify-content: center;
 		background: var(--bg-color);
 		color: var(--text-color);
+	}
+
+	@media (max-width: 720px) {
+		.costs {
+			align-items: center;
+		}
+
+		button.isPurchased .score {
+			font-size: 15px;
+			padding: 4px 2px;
+		}
+
+		.score {
+			font-size: 22px;
+		}
 	}
 </style>

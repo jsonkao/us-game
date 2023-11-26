@@ -39,7 +39,7 @@
 <style>
 	.cards-container {
 		display: flex;
-		margin-bottom: 16px;
+		margin: 15px 0;
 		flex-direction: row-reverse;
 	}
 
@@ -68,13 +68,14 @@
 		flex-direction: row;
 	}
 
-	@media (max-width: 900px) {
+	@media (max-width: 960px) {
 		.has-cards {
 			--spacing: 6px;
 		}
 	}
 
-	.cards-container.left .has-cards:last-child {
+	.cards-container.left .has-cards:last-child,
+	.cards-container:not(.left) .has-cards:first-child {
 		--spacing: 0;
 	}
 </style>

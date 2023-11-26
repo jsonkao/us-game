@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
-	import { browser } from '$app/environment';
 
 	import { cardStore } from '$lib/stores';
 	import { send, receive } from '$lib/utils/helpers';
@@ -53,6 +52,11 @@
 		flex-direction: column;
 		justify-content: flex-end;
 		align-items: center;
+	}
+
+	.stack p  {
+		text-align: center;
+		padding: 0 5px;
 	}
 
 	.stack p:last-child {

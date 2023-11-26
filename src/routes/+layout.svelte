@@ -1,8 +1,11 @@
 <script lang="ts">
-	import { nobleStore, cardStore } from '$lib/stores';
+	import { browser } from '$app/environment';
+	import { setContext } from 'svelte';
+
+	import { nobleStore, cardStore, moveStore } from '$lib/stores';
 	import { enactMove } from '$lib/utils/dispatch';
-	import { moveStore } from '$lib/stores';
 	import { beginSocket } from '$lib/utils/socket';
+	import { offline } from '$lib/utils/helpers';
 
 	import CardGrid from '$lib/components/CardGrid.svelte';
 	import Card from '$lib/components/Card.svelte';
@@ -10,8 +13,6 @@
 	import Tokens from '$lib/components/Tokens.svelte';
 	import CornerButtons from '$lib/components/CornerButtons.svelte';
 	import Presence from '$lib/components/Presence.svelte';
-	import { setContext } from 'svelte';
-	import { browser } from '$app/environment';
 
 	export let data;
 
@@ -20,26 +21,13 @@
 
 	setContext('game', game);
 
-	$: browser && beginSocket(game);
+	$: browser && !offline && beginSocket(game);
 
 	$: {
 		nobleStore.set(nobles);
 		cardStore.set(cards);
 		moves.forEach(enactMove);
 		moveStore.set(moves);
-	}
-
-	export async function restartGameHandler() {
-		await fetch('/moves', {
-			method: 'DELETE',
-			body: game.toString()
-		});
-	}
-
-	export async function startNewGame() {
-		await fetch('/moves', {
-			method: 'PATCH'
-		});
 	}
 </script>
 
@@ -62,12 +50,31 @@
 	</div>
 
 	<div class="restart-game">
-		<button on:click={restartGameHandler}>Restart.</button>
-		<button on:click={startNewGame}>Start new game.</button>
+		<button
+			on:click={() =>
+				!offline &&
+				fetch('/moves', {
+					method: 'DELETE',
+					body: game.toString()
+				})}
+		>
+			Restart.
+		</button>
+		<button
+			on:click={() =>
+				!offline &&
+				fetch('/moves', {
+					method: 'PATCH'
+				})}
+		>
+			Start new game.
+		</button>
 	</div>
 
 	<Presence />
 </div>
+
+<slot />
 
 <style>
 	:global(body) {
@@ -104,6 +111,7 @@
 		display: grid;
 		grid-template-columns: 1fr min-content 1fr;
 		column-gap: 10px;
+		row-gap: 10px;
 	}
 
 	.nobles {
@@ -112,7 +120,7 @@
 		align-items: center;
 		gap: 8px;
 		grid-column: 1 / -1;
-		margin-top: 50px;
+		margin-top: 30px;
 	}
 
 	.nobles div {
@@ -141,15 +149,17 @@
 	}
 
 	@media (max-width: 960px) {
+		/* U's iPhone 10 */
 		.container {
 			--card-width: 69px;
-			--card-height: 100px;
+			--card-height: 97px;
 			--token-size: 30px;
-			--cost-size: 10px;
+			--cost-size: 9px;
 			--cost-padding: 5px;
 			--card-grid-gap: 6px;
-			padding: 20px 15px;
+			padding: 13px 15px;
 			column-gap: 6px;
+			row-gap: 8px;
 		}
 
 		:global(p) {
@@ -157,6 +167,13 @@
 			font-size: 13px;
 		}
 	}
-</style>
 
-<slot />
+	@media (max-width: 720px) {
+		/* J's iPhone 8 */
+		.container {
+			--card-width: 54px;
+			--cost-size: 8px;
+			--token-size: 27px;
+		}
+	}
+</style>
