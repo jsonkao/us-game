@@ -13,6 +13,7 @@ body {
 	--bg-color: #f5eee6;
 	background-color: var(--bg-color);
 	touch-action: manipulation;
+	margin: 0;
 }
 
 button {
@@ -41,7 +42,8 @@ button {
 		--card-grid-gap: 6px;
 	}
 
-	p, button {
+	p,
+	button {
 		font-size: 13px;
 	}
 }

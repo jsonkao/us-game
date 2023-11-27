@@ -51,7 +51,6 @@ function random(seed: number) {
 	return x - Math.floor(x);
 }
 
-
 export const offline = true; // browser && new URLSearchParams(window.location.search).get('offline');
 
 // console.log('OFFLINE', offline)

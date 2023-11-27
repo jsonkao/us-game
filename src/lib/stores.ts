@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store';
 
-const INFINITE_MONEY = true;
+const INFINITE_MONEY = false;
 
 function createNobleStore() {
 	const initialNobles: Array<Noble> = [];
@@ -117,7 +117,7 @@ function createCardStore() {
 					  ]
 					: $cards;
 
-				// After each purchase, check if player is eligible for any nobles using the checkForNoble function
+				// After each purchase, check for newly eligible nobles and assign them to the player
 				nobleStore.checkForNobles(buyer, returnValue);
 
 				return returnValue;

@@ -69,11 +69,15 @@
 
 	button.isPurchased {
 		width: calc(var(--card-width) / 2);
-		height: calc(var(--card-height) / 2);
+		height: calc(var(--card-height) * 0.42);
 	}
 
 	button.isPurchased .score {
 		font-size: 20px;
+	}
+
+	button.isPurchased .costs {
+		padding: 0;
 	}
 
 	@media (max-width: 960px) {

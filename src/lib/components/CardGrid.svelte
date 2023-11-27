@@ -54,7 +54,7 @@
 		align-items: center;
 	}
 
-	.stack p  {
+	.stack p {
 		text-align: center;
 		padding: 0 5px;
 	}

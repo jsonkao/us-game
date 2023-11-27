@@ -44,6 +44,7 @@ declare global {
 		emoji: string;
 		player: Owner;
 		style: string;
+		flyX: number;
 	}
 
 	interface Presence {

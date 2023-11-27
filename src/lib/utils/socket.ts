@@ -11,7 +11,7 @@ let channel = makeChannel();
 export function beginSocket(game: number) {
 	if (channel.state === 'joined') {
 		supabase
-			.removeChannel('moves')
+			.removeChannel(channel /* 'moves' */)
 			.then(() => {
 				channel = makeChannel();
 				beginSocket(game);
@@ -30,8 +30,8 @@ export function beginSocket(game: number) {
 		.on('presence', { event: 'sync' }, () => presenceStore.set(channel.presenceState()))
 		.subscribe();
 
-	function handleInsert(payload) {
-		const move: Move = payload.new;
+	function handleInsert(payload: { new: Move }) {
+		const move = payload.new;
 		if (move.game === game) enactMove(move);
 	}
 
