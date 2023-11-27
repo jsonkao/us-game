@@ -15,7 +15,7 @@ export async function load() {
 }
 
 // Write a function that uses getMoves to group the cards owned by each player and sums their values by the discount property. Use the cards in initials.json
-export async function getScores(games: Array<number>) {
+async function getScores(games: Array<number>) {
 	let moves = await getMoves();
 
 	let scoreTotals: Record<number, Array<number>> = {};
