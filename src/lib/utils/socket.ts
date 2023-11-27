@@ -2,6 +2,7 @@ import { enactMove } from '$lib/utils/dispatch';
 import { chatStore, presenceStore } from '$lib/stores';
 import supabase from '$lib/client-database';
 import { browser } from '$app/environment';
+import type { Move } from '$lib/types/schema';
 
 const uid = 'id' + Math.random().toString(16).slice(2);
 
@@ -22,7 +23,7 @@ export function beginSocket(game: number) {
 
 	// Listen to inserts
 	channel
-		.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'moves' }, handleInsert)
+		.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'Move' }, handleInsert)
 		.on('broadcast', { event: 'emoji' }, ({ payload: { emoji, player } }) =>
 			chatStore.add(emoji, player)
 		)
@@ -32,6 +33,7 @@ export function beginSocket(game: number) {
 
 	function handleInsert(payload: { new: Move }) {
 		const move = payload.new;
+		console.log(move)
 		if (move.game === game) enactMove(move);
 	}
 

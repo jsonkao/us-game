@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const { storeName, action, args = [], game } = requestData;
 
 	const { error: pgError } = await supabase
-		.from('moves')
+		.from('Move')
 		.insert({ storeName, action, args: JSON.stringify(args), game })
 		.select();
 
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
 let channel = supabase.channel('moves');
 
 export const PATCH: RequestHandler = async () => {
-	const { error: pgError } = await supabase.from('games').insert([{}]);
+	const { error: pgError } = await supabase.from('Game').insert([{}]);
 	const response = await channel.send({
 		type: 'broadcast',
 		event: 'restart',
@@ -44,7 +44,7 @@ export const PATCH: RequestHandler = async () => {
 
 export const DELETE: RequestHandler = async ({ request }) => {
 	const game = +(await request.text());
-	const { error: pgError } = await supabase.from('moves').delete().eq('game', game);
+	const { error: pgError } = await supabase.from('Move').delete().eq('game', game);
 	const response = await channel.send({
 		type: 'broadcast',
 		event: 'restart',

@@ -34,11 +34,6 @@ declare global {
 		args: Array<any>;
 	}
 
-	interface Move extends Dispatch {
-		id: number;
-		game: number;
-	}
-
 	interface Chat {
 		id: number;
 		emoji: string;

@@ -1,5 +1,5 @@
 {
-	"name": "urvashis-game",
+	"name": "us-game",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
@@ -8,10 +8,10 @@
 		"preview": "vite preview",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"deploy": "pnpm build && gh-pages -d build",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"images": "(cd ./src/lib/images/nobles && ./make-images.sh)"
+		"images": "(cd ./src/lib/images/nobles && ./make-images.sh)",
+		"update-types": "pnpx supabase gen types typescript --project-id \"uclorczowqqvmumvftsc\" --schema public > src/lib/types/supabase.ts && pnpx better-supabase-types -i src/lib/types/supabase.ts -o src/lib/types/schema.ts"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-vercel": "^3.1.0",
@@ -19,7 +19,6 @@
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-svelte": "^2.30.0",
-		"gh-pages": "^6.0.0",
 		"prettier": "^3.0.0",
 		"prettier-plugin-svelte": "^3.0.0",
 		"svelte": "^4.0.5",

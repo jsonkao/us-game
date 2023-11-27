@@ -8,7 +8,7 @@ const PUBLIC_SUPABASE_ANON_KEY =
 const supabase = createClient<Database>(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY);
 
 export async function getMoves(game: number) {
-	let { data, error } = await supabase.from('moves').select('*');
+	let { data, error } = await supabase.from('Move').select('*');
 
 	if (error) {
 		throw error;
@@ -29,7 +29,7 @@ export async function getMoves(game: number) {
 
 export async function getCurrentGame(): Promise<number> {
 	let { data, error } = await supabase
-		.from('games')
+		.from('Game')
 		.select('*')
 		.order('id', { ascending: false })
 		.limit(1);

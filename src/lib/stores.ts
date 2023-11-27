@@ -1,4 +1,5 @@
 import { writable, get } from 'svelte/store';
+import type { Move } from '$lib/types/schema';
 
 const INFINITE_MONEY = false;
 
@@ -41,8 +42,10 @@ function createTokenStore() {
 		subscribe,
 		take: (newOwner: Owner, index: number) => {
 			update((tokens) => {
-				tokens[index].owner = newOwner;
-				tokens[index].lastModified = Date.now();
+				if (tokens[index]) {
+					tokens[index].owner = newOwner;
+					tokens[index].lastModified = Date.now();
+				}
 				return tokens;
 			});
 		},

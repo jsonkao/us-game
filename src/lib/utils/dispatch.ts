@@ -1,7 +1,8 @@
 import * as stores from '$lib/stores';
+import type { Move } from '$lib/types/schema';
 import { offline } from '$lib/utils/helpers';
 
-export function enactMove(dispatchData: Dispatch) {
+export function enactMove(dispatchData: Dispatch | Move) {
 	const { storeName, action, args = [] } = dispatchData;
 
 	if (!stores[storeName]) throw new Error(`Invalid store ${storeName}`);
