@@ -15,13 +15,13 @@ export default async function (game: number) {
 			...n,
 			owner: 'bank' as Owner,
 			image: '/' + imageKeys[i] + '.webp'
-		})),
+		})) as Array<Noble>,
 		cards: shuffle(
 			cards.map((c) => ({
 				...c,
 				owner: 'bank' as Owner
 			})),
 			game
-		)
+		) as Array<Card>
 	};
 }

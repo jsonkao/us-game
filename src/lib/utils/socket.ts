@@ -33,13 +33,16 @@ export function beginSocket(game: number) {
 
 	function handleInsert(payload: { new: Move }) {
 		const move = payload.new;
-		console.log(move)
+		console.log(move);
 		if (move.game === game) enactMove(move);
 	}
 
 	fetch(`https://ipapi.co/region/`)
 		.then((res) => res.text())
-		.then((location) => channel.track({ location }));
+		.then((location) => {
+			const presence: Presence = { location, game };
+			channel.track(presence);
+		});
 }
 
 export function broadcastEmoji(emoji: string, player: number) {

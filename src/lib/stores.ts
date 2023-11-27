@@ -42,25 +42,25 @@ function createTokenStore() {
 		subscribe,
 		take: (newOwner: Owner, index: number) => {
 			update((tokens) => {
-				if (tokens[index]) {
-					tokens[index].owner = newOwner;
-					tokens[index].lastModified = Date.now();
-				}
+				const token: Token | undefined = tokens[index];
+				if (token === undefined) return tokens;
+				token.owner = newOwner;
+				token.lastModified = Date.now();
 				return tokens;
 			});
 		},
-		pay: (owner: Owner, costs: Array<number>, discounts: Array<number>) => {
+		pay: (owner: Owner, costs: CostValue, discounts: CostValue) => {
 			// Check if player has enough tokens
 			const playerTokens = get(tokenStore).filter((t) => t.owner === owner);
 			const hasEnoughTokens = costs.every((value, color) => {
 				const tokensOfColor = playerTokens.filter((t) => t.color === color);
-				return tokensOfColor.length >= value - discounts[color];
+				return tokensOfColor.length >= value - (discounts[color] || 0);
 			});
 
 			if (hasEnoughTokens) {
 				update((tokens) => {
 					costs.forEach((value, color) => {
-						for (let v = 0; v < value - discounts[color]; v++) {
+						for (let v = 0; v < value - (discounts[color] || 0); v++) {
 							const token = tokens.find((t) => t.color === color && t.owner === owner);
 							if (token) {
 								token.owner = 'bank';
@@ -77,8 +77,8 @@ function createTokenStore() {
 	};
 }
 
-function getDiscounts(player: Owner, cards: Array<Card>): Array<number> {
-	const discounts = [0, 0, 0, 0, 0];
+function getDiscounts(player: Owner, cards: Array<Card>) {
+	const discounts: CostValue = [0, 0, 0, 0, 0];
 	cards.filter((c) => c.owner === player).forEach((c) => discounts[c.discount]++);
 	return discounts;
 }

@@ -25,9 +25,9 @@ export const [send, receive] = crossfade({
 
 export function shuffle<Type>(array: Array<Type>, seed: number): Array<Type> {
 	// <-- ADDED ARGUMENT
-	var m = array.length,
-		t,
-		i;
+	let m = array.length;
+	let t = array[0];
+	let i = 0;
 
 	// While there remain elements to shuffle…
 	while (m) {
@@ -36,11 +36,11 @@ export function shuffle<Type>(array: Array<Type>, seed: number): Array<Type> {
 
 		// And swap it with the current element.
 		t = array[m];
-		array[m] = array[i];
+		const next = array[i];
+		if (t === undefined || next === undefined) throw `Shuffle error: ${array}`;
+		array[m] = next;
 		array[i] = t;
 		++seed; // <-- ADDED LINE
-
-		if (seed === undefined || isNaN(i) || isNaN(m) || t === undefined) throw array;
 	}
 
 	return array;

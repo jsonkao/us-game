@@ -4,9 +4,10 @@ declare global {
 	}
 
 	type Owner = 'bank' | number;
+	type CostValue = [number, number, number, number, number];
 
 	interface BaseCard {
-		costs: Array<number>;
+		costs: CostValue;
 		score: number;
 		index: number;
 		owner: Owner;
@@ -44,7 +45,7 @@ declare global {
 
 	interface Presence {
 		location: string;
-		presence_ref: string;
+		game: number;
 	}
 }
 

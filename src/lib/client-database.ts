@@ -15,13 +15,7 @@ export async function getMoves(game: number) {
 	}
 
 	const moves = (data || [])
-		.map(({ storeName, action, args, id, game }) => ({
-			storeName,
-			action,
-			args: JSON.parse(args as string),
-			id,
-			game
-		}))
+		.map((m) => ({ ...m, args: JSON.parse(m.args as string) }))
 		.filter((m) => game === m.game);
 
 	return moves;
@@ -35,7 +29,7 @@ export async function getCurrentGame(): Promise<number> {
 		.limit(1);
 
 	if (error) throw error;
-	if (data === null) throw 'Data is null';
+	if (data === null || data[0] === undefined) throw 'Data is null';
 
 	return data[0].id;
 }
