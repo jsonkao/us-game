@@ -105,11 +105,13 @@ function createCardStore() {
 	return {
 		subscribe,
 		set,
-		purchase: (buyer: Owner, cardIndex: number) => {
+		purchase: (buyer: Owner, cardIndex: number, isFromHistory = false) => {
 			update(($cards) => {
 				const theCard = $cards.find((c) => c.index === cardIndex);
-				if (theCard === undefined) return $cards;
-				const isPaymentAccepted = tokenStore.pay(buyer, theCard.costs, getDiscounts(buyer, $cards));
+				if (theCard === undefined) {
+					return $cards;
+				}
+				const isPaymentAccepted = isFromHistory || tokenStore.pay(buyer, theCard.costs, getDiscounts(buyer, $cards));
 				const returnValue: Array<Card> = isPaymentAccepted
 					? [
 							...$cards.filter((c) => c.index !== cardIndex),

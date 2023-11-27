@@ -52,5 +52,3 @@ function random(seed: number) {
 }
 
 export const offline = false; // browser && new URLSearchParams(window.location.search).get('offline');
-
-// console.log('OFFLINE', offline)

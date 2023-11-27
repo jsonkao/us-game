@@ -9,6 +9,12 @@ export function enactMove(dispatchData: Dispatch | Move) {
 	if (!(action in stores[storeName]))
 		throw new Error(`Invalid action ${action} of store ${storeName}`);
 
+	// If the purchase is in the history, ignore whether tokens were enough (might have been in infinite money mode)
+	if (storeName === 'cardStore' && action === 'purchase') {
+		//@ts-ignore
+		args.push(true);
+	}
+
 	//@ts-ignore
 	stores[storeName][action](...args);
 }

@@ -21,7 +21,7 @@
 				<div>
 					<Presence gameProp={id} isSmall />
 					<p class="date">
-						Started {new Date(created_at).toLocaleDateString('en-us', {
+						Began {new Date(created_at).toLocaleDateString('en-us', {
 							weekday: 'long',
 							month: 'short',
 							day: 'numeric'
@@ -71,9 +71,9 @@
 		margin-top: 3px;
 	}
 
-	@media (max-width: 720px) {
+	@media (max-width: 960px) {
 		.home {
-			--home-card-size: 160px;
+			--home-card-size: 174px;
 			--items-per-row: 2;
 		}
 	}
