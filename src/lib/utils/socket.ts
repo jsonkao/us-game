@@ -9,17 +9,18 @@ const uid = 'id' + Math.random().toString(16).slice(2);
 const makeChannel = () => supabase.channel('moves', { config: { presence: { key: uid } } });
 let channel = makeChannel();
 
-export function beginSocket(game: number) {
-	if (channel.state === 'joined') {
-		supabase
-			.removeChannel(channel /* 'moves' */)
-			.then(() => {
-				channel = makeChannel();
-				beginSocket(game);
-			})
-			.catch(() => {});
-		return;
-	}
+function restartChannelAndBeginSocket(callback: () => void) {
+	supabase
+		.removeChannel(channel)
+		.then(() => {
+			channel = makeChannel();
+			callback();
+		})
+		.catch(() => {});
+}
+
+export function beginSocket(game: number): void {
+	if (channel.state === 'joined') return restartChannelAndBeginSocket(() => beginSocket(game));
 
 	// Listen to inserts
 	channel
@@ -33,7 +34,6 @@ export function beginSocket(game: number) {
 
 	function handleInsert(payload: { new: Move }) {
 		const move = payload.new;
-		console.log(move);
 		if (move.game === game) enactMove(move);
 	}
 
@@ -43,6 +43,13 @@ export function beginSocket(game: number) {
 			const presence: Presence = { location, game };
 			channel.track(presence);
 		});
+}
+
+export function beginHomepagePresence() {
+	if (channel.state === 'joined') return restartChannelAndBeginSocket(beginHomepagePresence);
+	channel
+		.on('presence', { event: 'sync' }, () => presenceStore.set(channel.presenceState()))
+		.subscribe();
 }
 
 export function broadcastEmoji(emoji: string, player: number) {

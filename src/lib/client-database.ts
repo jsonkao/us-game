@@ -7,18 +7,18 @@ const PUBLIC_SUPABASE_ANON_KEY =
 
 const supabase = createClient<Database>(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY);
 
-export async function getMoves(game: number) {
+export async function getMoves() {
 	let { data, error } = await supabase.from('Move').select('*');
 
 	if (error) {
 		throw error;
 	}
 
-	const moves = (data || [])
-		.map((m) => ({ ...m, args: JSON.parse(m.args as string) }))
-		.filter((m) => game === m.game);
+	return (data || []).map((m) => ({ ...m, args: JSON.parse(m.args as string) as Array<string> }));
+}
 
-	return moves;
+export async function getMovesForGame(game: number) {
+	return (await getMoves()).filter((m) => game === m.game);
 }
 
 export async function getCurrentGame(): Promise<number> {
@@ -36,7 +36,7 @@ export async function getCurrentGame(): Promise<number> {
 
 export async function getGameData(gameArg = null) {
 	let game = gameArg === null ? await getCurrentGame() : gameArg;
-	return { moves: await getMoves(game), game };
+	return { moves: await getMovesForGame(game), game };
 }
 
 export default supabase;

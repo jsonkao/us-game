@@ -69,7 +69,7 @@
 
 	button.isPurchased {
 		width: calc(var(--card-width) / 2);
-		height: calc(var(--card-height) * 0.42);
+		height: calc(var(--mini-card-height));
 	}
 
 	button.isPurchased .score {
