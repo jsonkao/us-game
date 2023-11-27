@@ -46,7 +46,6 @@
 
 <style>
 	button {
-		all: unset;
 		width: var(--card-width);
 		height: var(--card-height);
 		background: var(--card-color);

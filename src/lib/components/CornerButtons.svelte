@@ -130,8 +130,6 @@
 	}
 
 	.switch-turn button {
-		all: unset;
-		font-size: inherit;
 		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 		transition-duration: 0.2s;
 		pointer-events: all;
@@ -139,7 +137,6 @@
 
 	.switch-turn {
 		position: relative;
-		margin-bottom: 2px;
 	}
 
 	.switch-turn p {
@@ -158,7 +155,6 @@
 	}
 
 	.emojis button {
-		all: unset;
 		font-size: 30px;
 		pointer-events: all;
 		transition-duration: 0.2s;
@@ -166,7 +162,7 @@
 	}
 
 	.emojis {
-		margin-top: 3px;
+		margin-top: 5px;
 		display: flex;
 		gap: 3px;
 	}

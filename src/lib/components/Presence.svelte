@@ -18,14 +18,9 @@
 
 <style>
 	div {
-		margin-top: 8px;
 		display: flex;
 		grid-column: 1 / -1;
 		justify-content: center;
-	}
-
-	p {
-		font-size: inherit;
 	}
 
 	span:not(:last-child)::after {

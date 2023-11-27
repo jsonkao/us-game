@@ -14,6 +14,8 @@
 	import CornerButtons from '$lib/components/CornerButtons.svelte';
 	import Presence from '$lib/components/Presence.svelte';
 
+	import '../app.css';
+
 	export let data;
 
 	let { game, moves, cards } = data;
@@ -77,36 +79,7 @@
 <slot />
 
 <style>
-	:global(body) {
-		--bg-color: #f5eee6;
-		font-family: 'Roboto', sans-serif;
-		margin: 0;
-		background-color: var(--bg-color);
-
-		touch-action: manipulation;
-		width: 100%;
-		overflow-x: hidden;
-	}
-
-	:global(p) {
-		margin: 0;
-		font-size: 16px;
-	}
-
-	:global(button:hover) {
-		cursor: pointer;
-	}
-
 	.container {
-		--card-width: 110px;
-		--card-height: 160px;
-		--mini-card-height: calc(var(--card-height) / 2);
-		--token-size: 50px;
-		--drop-shadow: 0 -3px 2px rgba(0, 0, 0, 0.2);
-		--cost-size: 12px;
-		--cost-padding: 8px;
-		--card-grid-gap: 10px;
-
 		padding: 40px 30px;
 		display: grid;
 		grid-template-columns: 1fr min-content 1fr;
@@ -135,9 +108,7 @@
 	}
 
 	.restart-game button {
-		all: unset;
 		text-align: center;
-		font-size: inherit;
 		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 		transition-duration: 0.2s;
 		pointer-events: all;
@@ -149,31 +120,10 @@
 	}
 
 	@media (max-width: 960px) {
-		/* U's iPhone 10 */
 		.container {
-			--card-width: 69px;
-			--card-height: 97px;
-			--token-size: 30px;
-			--cost-size: 9px;
-			--cost-padding: 5px;
-			--card-grid-gap: 6px;
 			padding: 13px 15px;
 			column-gap: 6px;
 			row-gap: 8px;
-		}
-
-		:global(p) {
-			margin: 0;
-			font-size: 13px;
-		}
-	}
-
-	@media (max-width: 720px) {
-		/* J's iPhone 8 */
-		.container {
-			--card-width: 54px;
-			--cost-size: 8px;
-			--token-size: 27px;
 		}
 	}
 </style>

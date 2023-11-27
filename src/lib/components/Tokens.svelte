@@ -65,7 +65,6 @@
 	}
 
 	button {
-		all: unset;
 		width: var(--token-size);
 		height: var(--token-size);
 		background: var(--bg-color);

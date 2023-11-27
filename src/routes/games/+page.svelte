@@ -11,13 +11,12 @@
 </div>
 
 <style>
-  div {
-    max-width: 360px;
-    margin: 100px auto;
-  }
+	div {
+		max-width: 360px;
+		margin: 100px auto;
+	}
 
-  p {
-    font-size: 16px;
-    margin-bottom: 10px;
-  }
+	p {
+		margin-bottom: 10px;
+	}
 </style>
