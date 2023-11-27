@@ -121,9 +121,9 @@
 
 	@media (max-width: 960px) {
 		.container {
-			padding: 13px 15px;
+			padding: 11px 15px;
 			column-gap: 6px;
-			row-gap: 8px;
+			row-gap: 7px;
 		}
 	}
 </style>
