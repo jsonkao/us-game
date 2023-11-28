@@ -32,8 +32,10 @@ export const nobleStore = createNobleStore();
 function createTokenStore() {
 	const initialTokens: Array<Token> = [];
 	let index = 0;
-	for (let color = 0; color < 5; color++)
-		for (let i = 0; i < 4; i++)
+
+	const WILDCARD_COLOR = 5;
+	for (let color = 0; color < WILDCARD_COLOR + 1; color++)
+		for (let i = 0; i < (color === WILDCARD_COLOR ? 5 : 4); i++)
 			initialTokens.push({ color, owner: 'bank', index: index++, lastModified: 0 });
 
 	const { subscribe, update } = writable(initialTokens);
@@ -43,6 +45,15 @@ function createTokenStore() {
 		take: (newOwner: Owner, index: number) => {
 			update((tokens) => {
 				const token: Token | undefined = tokens[index];
+				if (token === undefined) return tokens;
+				token.owner = newOwner;
+				token.lastModified = Date.now();
+				return tokens;
+			});
+		},
+		takeWildcard: (newOwner: Owner) => {
+			update((tokens) => {
+				const token: Token | undefined = tokens.find((t) => t.color === WILDCARD_COLOR);
 				if (token === undefined) return tokens;
 				token.owner = newOwner;
 				token.lastModified = Date.now();
@@ -105,13 +116,30 @@ function createCardStore() {
 	return {
 		subscribe,
 		set,
+		reserve: (buyer: Owner, cardIndex: number) =>
+			update(($cards) => {
+				const theCard = $cards.find((c) => c.index === cardIndex);
+				if (theCard === undefined) {
+					return $cards;
+				}
+
+				tokenStore.takeWildcard(buyer);
+				return [
+					...$cards.filter((c) => c.index !== cardIndex),
+					{
+						...theCard,
+						heldBy: buyer
+					}
+				];
+			}),
 		purchase: (buyer: Owner, cardIndex: number, isFromHistory = false) => {
 			update(($cards) => {
 				const theCard = $cards.find((c) => c.index === cardIndex);
 				if (theCard === undefined) {
 					return $cards;
 				}
-				const isPaymentAccepted = isFromHistory || tokenStore.pay(buyer, theCard.costs, getDiscounts(buyer, $cards));
+				const isPaymentAccepted =
+					isFromHistory || tokenStore.pay(buyer, theCard.costs, getDiscounts(buyer, $cards));
 				const returnValue: Array<Card> = isPaymentAccepted
 					? [
 							...$cards.filter((c) => c.index !== cardIndex),

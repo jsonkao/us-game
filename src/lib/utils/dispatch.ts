@@ -2,7 +2,7 @@ import * as stores from '$lib/stores';
 import type { Move } from '$lib/types/schema';
 import { offline } from '$lib/utils/helpers';
 
-export function enactMove(dispatchData: Dispatch | Move) {
+export function enactMove(dispatchData: Dispatch | Move, isFromHistory = false) {
 	const { storeName, action, args = [] } = dispatchData;
 
 	if (!stores[storeName]) throw new Error(`Invalid store ${storeName}`);
@@ -10,7 +10,7 @@ export function enactMove(dispatchData: Dispatch | Move) {
 		throw new Error(`Invalid action ${action} of store ${storeName}`);
 
 	// If the purchase is in the history, ignore whether tokens were enough (might have been in infinite money mode)
-	if (storeName === 'cardStore' && action === 'purchase') {
+	if (storeName === 'cardStore' && action === 'purchase' && isFromHistory) {
 		//@ts-ignore
 		args.push(true);
 	}

@@ -11,19 +11,16 @@
 
 	let { costs, score, index } = card;
 	let isPurchased = card.owner !== 'bank' && !isNoble;
-
+	let isReserved = (card as Card).heldBy !== undefined;
 	let image = (card as Noble).image;
 	let discount = (card as Card).discount;
 </script>
 
-<button
+<div
 	class="card"
 	class:isNoble
 	class:isPurchased
 	style="--card-color: {chipColors[discount]}; --image: url('{image}')"
-	on:click={() =>
-		dispatchMove({ storeName: 'cardStore', action: 'purchase', args: [$playerStore, index] }, game)}
-	disabled={isPurchased || isNoble}
 >
 	<p class="score" style="color: {chipTextColors[discount] || (isNoble ? '#fff' : '#121212')}">
 		{#if score > 0}
@@ -42,17 +39,84 @@
 			{/each}
 		{/if}
 	</div>
-</button>
+
+	{#if !isNoble && !isPurchased}
+		<div class="card-options">
+			<button
+				on:click={() =>
+					dispatchMove(
+						{ storeName: 'cardStore', action: 'purchase', args: [$playerStore, index] },
+						game
+					)}
+				disabled={isPurchased || isNoble}
+			>
+				Buy
+			</button>
+
+			{#if !isReserved}
+				<button
+					on:click={() =>
+						dispatchMove(
+							{ storeName: 'cardStore', action: 'reserve', args: [$playerStore, index] },
+							game
+						)}
+					disabled={isPurchased || isNoble}
+				>
+					Reserve
+				</button>
+			{/if}
+		</div>
+	{/if}
+</div>
 
 <style>
-	button {
+	.card-options {
+		grid-row: 1;
+		grid-column: 1 / -1;
+		height: 100%;
+		width: 100%;
+		background: rgba(0, 0, 0, 0.2);
+		transition-duration: 0.2s;
+		opacity: 0;
+		pointer-events: none;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 7px;
+		box-sizing: border-box;
+		padding-bottom: 7px;
+	}
+
+	.card:hover .card-options {
+		opacity: 1;
+	}
+
+	.card:hover .card-options button {
+		pointer-events: all;
+	}
+
+	.card-options button {
+		padding: 4px 0;
+		text-align: center;
+		width: calc(100% - 13px);
+		border-radius: 4px;
+		background: rgba(255, 255, 255, 0.8);
+		transition-duration: 0.15s;
+	}
+
+	.card-options button:hover {
+		transform: translateY(-1px);
+		background: rgba(255, 255, 255, 1);
+	}
+
+	.card {
 		width: var(--card-width);
 		height: var(--card-height);
 		background: var(--card-color);
 		background-size: cover;
 		background-repeat: no-repeat;
 		position: relative;
-		border-radius: 4px;
 		box-shadow: var(--drop-shadow);
 
 		display: grid;
@@ -60,34 +124,49 @@
 		transition-duration: 0.2s;
 	}
 
-	button.isNoble {
+	.card,
+	.card-options {
+		border-radius: 4px;
+	}
+
+	.card.isNoble {
 		height: var(--card-width);
 		background: var(--image, var(--card-color));
 		background-size: cover;
 		background-repeat: no-repeat;
 	}
 
-	button.isPurchased {
+	.card.isPurchased {
 		width: calc(var(--card-width) / 2);
 		height: calc(var(--mini-card-height));
 	}
 
-	button.isPurchased .score {
+	.card.isPurchased .score {
 		font-size: 20px;
 	}
 
-	button.isPurchased .costs {
+	.card.isPurchased .costs {
 		padding: 0;
 	}
 
+	.score {
+		grid-row: 1;
+		grid-column: 1;
+	}
+
+	.costs {
+		grid-row: 1;
+		grid-column: 2;
+	}
+
 	@media (max-width: 960px) {
-		button.isPurchased .score {
+		.card.isPurchased .score {
 			font-size: 17px;
 			padding: 4px;
 		}
 	}
 
-	button:not(.isNoble):not(.isPurchased):hover {
+	.card:not(.isNoble):not(.isPurchased):hover {
 		cursor: pointer;
 		transform: translateY(-2px);
 	}
@@ -98,7 +177,7 @@
 		padding: 8px;
 	}
 
-	button:not(.isNoble) .costs {
+	.card:not(.isNoble) .costs {
 		background: #fafafa;
 	}
 
@@ -113,31 +192,31 @@
 	}
 
 	@media (max-width: 960px) {
-		button.isNoble {
+		.card.isNoble {
 			grid-template-columns: 1fr;
 		}
 
-		button.isNoble > * {
+		.card.isNoble > * {
 			grid-column: 1;
 			grid-row: 1;
 		}
 
-		button.isNoble .costs {
+		.card.isNoble .costs {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
 			grid-template-rows: 1fr 1fr;
 			justify-content: flex-end;
 		}
 
-		button.isNoble .cost:first-child {
+		.card.isNoble .cost:first-child {
 			grid-column: 1 / -1;
 		}
 
-		button.isNoble .cost:last-child {
+		.card.isNoble .cost:last-child {
 			grid-column: 2;
 		}
 
-		button.isNoble .cost {
+		.card.isNoble .cost {
 			justify-self: flex-end;
 		}
 	}
@@ -159,7 +238,7 @@
 			align-items: center;
 		}
 
-		button.isPurchased .score {
+		.card.isPurchased .score {
 			font-size: 15px;
 			padding: 4px 2px;
 		}

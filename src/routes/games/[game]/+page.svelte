@@ -26,7 +26,7 @@
 	$: {
 		nobleStore.set(nobles);
 		cardStore.set(cards);
-		moves.forEach(enactMove);
+		moves.forEach((m) => enactMove(m, true));
 		moveStore.set(moves);
 	}
 </script>

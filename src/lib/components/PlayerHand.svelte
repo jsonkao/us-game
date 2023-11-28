@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Card from '$lib/components/Card.svelte';
+	import ReservedCard from '$lib/components/ReservedCard.svelte';
 	import Tokens from '$lib/components/Tokens.svelte';
 	import { cardStore, nobleStore } from '$lib/stores';
 
@@ -34,6 +35,14 @@
 			</div>
 		{/each}
 	</div>
+
+	<div class="reserved-cards-container" class:left={player === 0}>
+		{#each $cardStore.filter((c) => c.heldBy === player) as card (card.index)}
+			<div in:receive={{ key: card.index }} out:send={{ key: card.index }} animate:flip>
+				<ReservedCard {card} />
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
@@ -54,7 +63,7 @@
 		padding-bottom: calc(var(--mini-card-height) - var(--row-height));
 	}
 
-	.nobles-container {
+	.nobles-container, .reserved-cards-container {
 		display: flex;
 		gap: 10px;
 	}

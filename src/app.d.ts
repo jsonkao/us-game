@@ -16,6 +16,7 @@ declare global {
 	interface Card extends BaseCard {
 		level: number;
 		discount: number;
+		heldBy?: Owner;
 	}
 
 	interface Noble extends BaseCard {
