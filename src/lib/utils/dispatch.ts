@@ -5,6 +5,8 @@ import { offline } from '$lib/utils/helpers';
 export function enactMove(dispatchData: Dispatch | Move, isFromHistory = false) {
 	const { storeName, action, args = [] } = dispatchData;
 
+	if (action === 'reserve') return; // Let's not do reserving yet
+
 	if (!stores[storeName]) throw new Error(`Invalid store ${storeName}`);
 	if (!(action in stores[storeName]))
 		throw new Error(`Invalid action ${action} of store ${storeName}`);
