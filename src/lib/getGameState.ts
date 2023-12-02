@@ -10,7 +10,8 @@ export default async function (game: number) {
 		cards: shuffle(
 			cards.map((c) => ({
 				...c,
-				owner: 'bank' as Owner
+				owner: 'bank' as Owner,
+				heldBy: null,
 			})),
 			game
 		) as Array<Card>

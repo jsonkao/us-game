@@ -1,4 +1,4 @@
-import { writable, get } from 'svelte/store';
+import { writable, get, derived } from 'svelte/store';
 import type { Move } from '$lib/types/schema';
 
 const INFINITE_MONEY = false;
@@ -53,45 +53,16 @@ function createTokenStore() {
 		},
 		takeWildcard: (newOwner: Owner) => {
 			update((tokens) => {
-				const token: Token | undefined = tokens.find((t) => t.color === WILDCARD_COLOR);
+				const token: Token | undefined = tokens.find(
+					(t) => t.color === WILDCARD_COLOR && t.owner === 'bank'
+				);
 				if (token === undefined) return tokens;
 				token.owner = newOwner;
 				token.lastModified = Date.now();
 				return tokens;
 			});
-		},
-		pay: (owner: Owner, costs: CostValue, discounts: CostValue) => {
-			// Check if player has enough tokens
-			const playerTokens = get(tokenStore).filter((t) => t.owner === owner);
-			const hasEnoughTokens = costs.every((value, color) => {
-				const tokensOfColor = playerTokens.filter((t) => t.color === color);
-				return tokensOfColor.length >= value - (discounts[color] || 0);
-			});
-
-			if (hasEnoughTokens) {
-				update((tokens) => {
-					costs.forEach((value, color) => {
-						for (let v = 0; v < value - (discounts[color] || 0); v++) {
-							const token = tokens.find((t) => t.color === color && t.owner === owner);
-							if (token) {
-								token.owner = 'bank';
-								token.lastModified = Date.now();
-							}
-						}
-					});
-					return tokens;
-				});
-				return true;
-			}
-			return INFINITE_MONEY;
 		}
 	};
-}
-
-function getDiscounts(player: Owner, cards: Array<Card>) {
-	const discounts: CostValue = [0, 0, 0, 0, 0];
-	cards.filter((c) => c.owner === player).forEach((c) => discounts[c.discount]++);
-	return discounts;
 }
 
 export const playerStore = createCurrentPlayerStore();
@@ -119,9 +90,7 @@ function createCardStore() {
 		reserve: (buyer: Owner, cardIndex: number) =>
 			update(($cards) => {
 				const theCard = $cards.find((c) => c.index === cardIndex);
-				if (theCard === undefined) {
-					return $cards;
-				}
+				if (theCard === undefined) return $cards;
 
 				tokenStore.takeWildcard(buyer);
 				return [
@@ -132,23 +101,19 @@ function createCardStore() {
 					}
 				];
 			}),
-		purchase: (buyer: Owner, cardIndex: number, isFromHistory = false) => {
+		purchase: (buyer: Owner, cardIndex: number) => {
 			update(($cards) => {
 				const theCard = $cards.find((c) => c.index === cardIndex);
-				if (theCard === undefined) {
-					return $cards;
-				}
-				const isPaymentAccepted =
-					isFromHistory || tokenStore.pay(buyer, theCard.costs, getDiscounts(buyer, $cards));
-				const returnValue: Array<Card> = isPaymentAccepted
-					? [
-							...$cards.filter((c) => c.index !== cardIndex),
-							{
-								...theCard,
-								owner: buyer
-							}
-					  ]
-					: $cards;
+				if (theCard === undefined) return $cards;
+
+				const returnValue: Array<Card> = [
+					...$cards.filter((c) => c.index !== cardIndex),
+					{
+						...theCard,
+						owner: buyer,
+						heldBy: null
+					}
+				];
 
 				// After each purchase, check for newly eligible nobles and assign them to the player
 				nobleStore.checkForNobles(buyer, returnValue);

@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
 
-	import { cardStore } from '$lib/stores';
+	import { cardStore, playerStore } from '$lib/stores';
 	import { send, receive } from '$lib/utils/helpers';
 	import Card from '$lib/components/Card.svelte';
 
 	let levels = [2, 1, 0];
 
 	$: cardsForGrid = $cardStore.filter((c) => c.owner === 'bank');
+	$: canPlayerReserve = $cardStore.filter((c) => c.heldBy === $playerStore).length < 3;
 </script>
 
 <div class="card-grid">
@@ -23,7 +24,7 @@
 
 		{#each cardsForGrid.filter((c) => c.level === level).slice(0, 4) as card (card.index)}
 			<div in:receive={{ key: card.index }} out:send={{ key: card.index }} animate:flip>
-				<Card {card} />
+				<Card {card} {canPlayerReserve }/>
 			</div>
 		{/each}
 	{/each}

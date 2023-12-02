@@ -1,19 +1,46 @@
 <script lang="ts">
 	import { chipColors, chipTextColors } from '$lib/colors.js';
-	import { playerStore } from '$lib/stores';
+	import { playerStore, tokenStore, cardStore } from '$lib/stores';
 	import { dispatchMove } from '$lib/utils/dispatch';
 	import { getContext } from 'svelte';
 
 	export let card: Card | Noble;
 	export let isNoble = false;
+	export let canPlayerReserve = false;
 
 	const game: number = getContext('game');
 
 	let { costs, score, index } = card;
 	let isPurchased = card.owner !== 'bank' && !isNoble;
-	let isReserved = (card as Card).heldBy !== undefined;
+	let isReserved = (card as Card).heldBy !== null;
 	let image = (card as Noble).image;
 	let discount = (card as Card).discount;
+
+	let purchasable = false;
+	$: {
+		const buyer = $playerStore;
+		const discounts = getDiscounts(buyer, $cardStore);
+		const playerTokens = $tokenStore.filter((t) => t.owner === buyer);
+
+		let tokensOwed = 0;
+		costs.forEach((value, color) => {
+			const tokensOfColor = playerTokens.filter((t) => t.color === color);
+
+			const difference = tokensOfColor.length - (value - (discounts[color] || 0));
+			if (difference < 0) {
+				tokensOwed += difference;
+			}
+		});
+
+		purchasable =
+			playerTokens.filter((t) => t.color === costs.length).length >= Math.abs(tokensOwed);
+	}
+
+	function getDiscounts(player: Owner, cards: Array<Card>) {
+		const discounts: CostValue = [0, 0, 0, 0, 0];
+		cards.filter((c) => c.owner === player).forEach((c) => discounts[c.discount]++);
+		return discounts;
+	}
 </script>
 
 <div
@@ -48,7 +75,7 @@
 						{ storeName: 'cardStore', action: 'purchase', args: [$playerStore, index] },
 						game
 					)}
-				disabled={isPurchased || isNoble}
+				disabled={isPurchased || isNoble || !purchasable}
 			>
 				Buy
 			</button>
@@ -60,7 +87,7 @@
 							{ storeName: 'cardStore', action: 'reserve', args: [$playerStore, index] },
 							game
 						)}
-					disabled={isPurchased || isNoble}
+					disabled={isPurchased || isNoble || !canPlayerReserve}
 				>
 					Reserve
 				</button>
@@ -105,9 +132,13 @@
 		transition-duration: 0.15s;
 	}
 
-	.card-options button:hover {
+	.card-options button:not(:disabled):hover {
 		transform: translateY(-1px);
 		background: rgba(255, 255, 255, 1);
+	}
+
+	.card-options button:disabled {
+		opacity: 0.5;
 	}
 
 	.card {
