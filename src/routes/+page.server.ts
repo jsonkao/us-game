@@ -3,10 +3,7 @@ import { getNobles } from '$lib/getGameState';
 import { cards } from '$lib/initials.json';
 
 export async function load() {
-	let { data: games, error } = await supabase
-		.from('Game')
-		.select('*')
-		.order('id');
+	let { data: games, error } = await supabase.from('Game').select('*').order('id');
 
 	if (error) throw error;
 	if (games === null) throw 'Games data is null';
@@ -34,8 +31,7 @@ async function getScores(games: Array<number>) {
 			let card = cards[cardIndex];
 			if (card === undefined) throw `Could not find card with index ${cardIndex}`;
 
-			if (cardsByPlayer[player] === undefined) cardsByPlayer[player] = [];
-			cardsByPlayer[player].push(card as Card);
+			cardsByPlayer[player] = [...(cardsByPlayer[player] || []), card as Card];
 		}
 
 		// Using cardsByPlayer, check for nobles that are eligible for each player. A noble is eligible for a player if the player has enough cards to satisfy the noble's costs.

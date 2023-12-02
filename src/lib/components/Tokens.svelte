@@ -17,7 +17,7 @@
 	class="container"
 	style="justify-content: {owner === 'bank' ? 'center' : owner ? 'flex-end' : 'flex-start'}"
 >
-	{#each [0, 1, 2, 3, 4] as color}
+	{#each [0, 1, 2, 3, 4, 5] as color}
 		<div class="tokens" class:has-tokens={tokens.filter((t) => t.color === color).length}>
 			{#each tokens
 				.filter((t) => t.color === color)
@@ -47,14 +47,14 @@
 		--row-height: 5px;
 		grid-column: 1 / -1;
 		display: flex;
-		height: calc(var(--token-size) + var(--row-height) * 3);
+		height: calc(var(--token-size) + var(--row-height) * 4);
 		grid-row: 1;
 	}
 
 	.tokens {
 		display: grid;
 		grid-template-columns: 1fr;
-		grid-template-rows: repeat(4, var(--row-height));
+		grid-template-rows: repeat(5, var(--row-height));
 		transition-duration: 0.15s;
 		width: 0;
 		transition-duration: 0.3s;
