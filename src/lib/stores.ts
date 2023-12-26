@@ -1,4 +1,4 @@
-import { writable, get, derived } from 'svelte/store';
+import { writable } from 'svelte/store';
 import type { Move } from '$lib/types/schema';
 
 const INFINITE_MONEY = false;

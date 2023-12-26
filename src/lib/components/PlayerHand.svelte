@@ -63,7 +63,8 @@
 		padding-bottom: calc(var(--mini-card-height) - var(--row-height));
 	}
 
-	.nobles-container, .reserved-cards-container {
+	.nobles-container,
+	.reserved-cards-container {
 		display: flex;
 		gap: 10px;
 	}

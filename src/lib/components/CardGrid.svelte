@@ -24,7 +24,7 @@
 
 		{#each cardsForGrid.filter((c) => c.level === level).slice(0, 4) as card (card.index)}
 			<div in:receive={{ key: card.index }} out:send={{ key: card.index }} animate:flip>
-				<Card {card} {canPlayerReserve }/>
+				<Card {card} {canPlayerReserve} />
 			</div>
 		{/each}
 	{/each}

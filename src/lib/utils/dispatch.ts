@@ -5,19 +5,17 @@ import { offline } from '$lib/utils/helpers';
 export function enactMove(dispatchData: Dispatch | Move, isFromHistory = false) {
 	const { storeName, action, args = [] } = dispatchData;
 
-	if (action === 'reserve') return; // Let's not do reserving yet
-
 	if (!stores[storeName]) throw new Error(`Invalid store ${storeName}`);
 	if (!(action in stores[storeName]))
 		throw new Error(`Invalid action ${action} of store ${storeName}`);
 
 	// If the purchase is in the history, ignore whether tokens were enough (might have been in infinite money mode)
 	if (storeName === 'cardStore' && action === 'purchase' && isFromHistory) {
-		//@ts-ignore
+		// @ts-ignore
 		args.push(true);
 	}
 
-	//@ts-ignore
+	// @ts-ignore
 	stores[storeName][action](...args);
 }
 

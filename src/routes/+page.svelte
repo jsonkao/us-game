@@ -1,11 +1,14 @@
-<script>
+<script lang="ts">
+	import type { PageData } from './$types';
 	import { browser } from '$app/environment';
-	import HomeCard from '$lib/components/HomeCard.svelte';
+
 	import { offline } from '$lib/utils/helpers';
 	import { beginHomepagePresence } from '$lib/utils/socket';
-	import Presence from '$lib/components/Presence.svelte';
 
-	export let data;
+	import Presence from '$lib/components/Presence.svelte';
+	import HomeCard from '$lib/components/HomeCard.svelte';
+
+	export let data: PageData;
 
 	let { games, scores } = data;
 

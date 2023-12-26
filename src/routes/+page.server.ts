@@ -5,7 +5,7 @@ import { cards } from '$lib/initials.json';
 export async function load() {
 	let { data: games, error } = await supabase.from('Game').select('*').order('id');
 
-	if (error) throw error;
+	if (error) throw `Supabase select error: ${JSON.stringify(error, null, 2)}`;
 	if (games === null) throw 'Games data is null';
 
 	return { games, scores: await getScores(games.map((g) => g.id)) };

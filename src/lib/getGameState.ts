@@ -11,7 +11,7 @@ export default async function (game: number) {
 			cards.map((c) => ({
 				...c,
 				owner: 'bank' as Owner,
-				heldBy: null,
+				heldBy: null
 			})),
 			game
 		) as Array<Card>
